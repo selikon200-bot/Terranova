@@ -1,26 +1,171 @@
 <!doctype html><html lang="ar" dir="rtl"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>TerraNova Web 0.2</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>TerraNova Web 0.3</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#07111f;color:#eaf6ff;font-family:Arial,sans-serif}#app{max-width:700px;margin:auto;min-height:100vh;padding:14px}
-h1{margin:5px 0;font-size:28px}.sub{color:#8fb0c9;font-size:13px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
-.card{background:#102235;border:1px solid #1e3a52;border-radius:14px;padding:10px;text-align:center}.big{font-size:22px;font-weight:bold}.label{font-size:11px;color:#91abc0}
-.planet{height:260px;width:260px;border-radius:50%;margin:18px auto;background:radial-gradient(circle at 35% 30%,#6bd6ff 0 9%,transparent 10%),radial-gradient(circle at 60% 62%,#48a878 0 14%,transparent 15%),radial-gradient(circle at 30% 70%,#388f68 0 10%,transparent 11%),radial-gradient(circle at 65% 30%,#72c47a 0 8%,transparent 9%),radial-gradient(circle at 50% 50%,#1870a0,#0a3658 60%,#041522 75%);box-shadow:0 0 45px #2a9dca88,inset -25px -15px 45px #00101e}
-button{width:100%;padding:14px;margin:5px 0;border:0;border-radius:12px;background:#1d8f72;color:white;font-size:16px;font-weight:bold}.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.log{background:#081725;border-radius:12px;padding:10px;height:110px;overflow:auto;font-size:12px;color:#b9d2e2}
+*{box-sizing:border-box}body{margin:0;background:#050d17;color:#eaf6ff;font-family:Arial,sans-serif}
+#app{max-width:900px;margin:auto;min-height:100vh;padding:12px}
+h1{margin:4px 0;font-size:28px}.sub{color:#8fb0c9;font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0}
+.card{background:#102235;border:1px solid #1e3a52;border-radius:14px;padding:9px;text-align:center}.big{font-size:21px;font-weight:bold}.label{font-size:11px;color:#91abc0}
+.mapbox{position:relative;height:440px;border-radius:20px;overflow:hidden;border:1px solid #23435a;background:#020913;box-shadow:0 0 35px #148dcc33;margin:12px 0}
+.map{position:absolute;inset:0;touch-action:none;cursor:grab;transform-origin:center}
+.map.drag{cursor:grabbing}
+.space{position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,#fff 0 1px,transparent 2px),radial-gradient(circle at 80% 30%,#fff 0 1px,transparent 2px),radial-gradient(circle at 45% 70%,#fff 0 1px,transparent 2px),#020913}
+.planetmap{position:absolute;width:760px;height:760px;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;overflow:hidden;
+background:
+radial-gradient(circle at 28% 24%,#b8783e 0 3%,transparent 3.5%),
+radial-gradient(circle at 67% 25%,#8e4e2f 0 7%,transparent 7.5%),
+radial-gradient(circle at 47% 63%,#7c452b 0 5%,transparent 5.5%),
+radial-gradient(circle at 73% 65%,#6f3c29 0 4%,transparent 4.5%),
+radial-gradient(circle at 35% 70%,#315f50 0 8%,transparent 8.5%),
+radial-gradient(circle at 58% 42%,#3d6f59 0 6%,transparent 6.5%),
+radial-gradient(circle at 50% 50%,#a65c32,#703a27 55%,#321d21 82%);
+box-shadow:inset -80px -40px 100px #080b13,inset 25px 15px 55px #d7884a55,0 0 45px #39b9e955}
+.crater{position:absolute;border-radius:50%;border:7px solid #4a2a27;background:#251a1d88;box-shadow:inset 0 0 15px #050507}
+.mountain{position:absolute;width:0;height:0;border-left:35px solid transparent;border-right:35px solid transparent;border-bottom:75px solid #6d6b63;filter:drop-shadow(0 7px 5px #171518)}
+.path{position:absolute;height:3px;background:#8de9ff99;transform-origin:left center;box-shadow:0 0 7px #55dfff}
+.node{position:absolute;transform:translate(-50%,-50%);z-index:5}
+.node button{width:66px;height:66px;border-radius:50%;padding:0;margin:0;background:#0b2638;border:2px solid #42c8f2;box-shadow:0 0 16px #26bde988;font-size:27px}
+.node span{display:block;margin-top:4px;white-space:nowrap;background:#071521dd;border:1px solid #2d5369;border-radius:8px;padding:5px 8px;font-size:11px;text-align:center}
+.node.lock button{border-color:#63717a;filter:grayscale(1);opacity:.75}.node.lock span{color:#9caab1}
+.node.active button{background:#123f2b;border-color:#69ef98;box-shadow:0 0 20px #4eea8b99}
+.node.selected button{transform:scale(1.12);border-color:#ffe082}
+.mapcontrols{position:absolute;left:10px;top:10px;z-index:20;display:flex;gap:6px}
+.mapcontrols button{width:42px;height:42px;padding:0;margin:0;border-radius:10px;background:#0c1c2aee;border:1px solid #315269;color:#fff;font-size:20px}
+.mapinfo{position:absolute;right:10px;top:10px;z-index:20;background:#071521e8;border:1px solid #315269;border-radius:12px;padding:8px 10px;font-size:12px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.actions button,.wide{width:100%;padding:13px;margin:4px 0;border:0;border-radius:12px;background:#1d8f72;color:white;font-size:15px;font-weight:bold}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.row button{width:100%;padding:13px;margin:4px 0;border:0;border-radius:12px;background:#1d8f72;color:white;font-size:15px;font-weight:bold}
+.log{background:#081725;border-radius:12px;padding:10px;height:105px;overflow:auto;font-size:12px;color:#b9d2e2}
+#regionPanel{display:none;background:#0b1b2a;border:1px solid #315269;border-radius:14px;padding:12px;margin:8px 0}
+#regionPanel h3{margin:0 0 5px}#regionPanel p{margin:5px 0;color:#a9c0cf;font-size:13px}
+.small{font-size:11px;color:#7fa1b6}
+@media(max-width:520px){.mapbox{height:390px}.planetmap{width:650px;height:650px}.node button{width:56px;height:56px;font-size:23px}.node span{font-size:10px}.stats{gap:5px}.big{font-size:18px}}
 </style></head><body><div id="app">
-<h1>🌍 TerraNova</h1><div class="sub">Web 0.2 — حوّل كوكبًا ميتًا إلى عالم صالح للحياة</div>
+<h1>🌍 TerraNova</h1><div class="sub">Web 0.3 — خريطة الكوكب التفاعلية</div>
+
 <div class="stats"><div class="card"><div id="credits" class="big">1000</div><div class="label">💰 الرصيد</div></div><div class="card"><div id="oxy" class="big">5%</div><div class="label">🫁 الأكسجين</div></div><div class="card"><div id="pop" class="big">10</div><div class="label">👨‍🚀 السكان</div></div></div>
-<div class="planet"></div>
+
+<div class="mapbox" id="mapbox">
+  <div class="space"></div>
+  <div class="map" id="map">
+    <div class="planetmap">
+      <div class="crater" style="width:95px;height:95px;left:14%;top:22%"></div>
+      <div class="crater" style="width:65px;height:65px;left:60%;top:18%"></div>
+      <div class="crater" style="width:120px;height:120px;left:67%;top:48%"></div>
+      <div class="crater" style="width:70px;height:70px;left:25%;top:62%"></div>
+      <div class="mountain" style="left:43%;top:12%;transform:rotate(-8deg)"></div>
+      <div class="mountain" style="left:48%;top:15%;transform:scale(.7)"></div>
+      <div class="mountain" style="left:76%;top:30%;transform:scale(.8)"></div>
+
+      <div class="path" style="left:50%;top:51%;width:170px;transform:rotate(-34deg)"></div>
+      <div class="path" style="left:50%;top:51%;width:190px;transform:rotate(22deg)"></div>
+      <div class="path" style="left:50%;top:51%;width:175px;transform:rotate(88deg)"></div>
+      <div class="path" style="left:50%;top:51%;width:185px;transform:rotate(145deg)"></div>
+
+      <div class="node active selected" style="left:50%;top:51%" data-id="base"><button onclick="selectRegion('base')">🏠</button><span>القاعدة الرئيسية</span></div>
+      <div class="node" style="left:31%;top:30%" data-id="mine"><button onclick="selectRegion('mine')">⛏️</button><span>منجم المعادن</span></div>
+      <div class="node" style="left:72%;top:31%" data-id="water"><button onclick="selectRegion('water')">💧</button><span>وادي المياه</span></div>
+      <div class="node" style="left:63%;top:73%" data-id="solar"><button onclick="selectRegion('solar')">☀️</button><span>حقل الطاقة</span></div>
+      <div class="node lock" style="left:25%;top:70%" data-id="ice"><button onclick="selectRegion('ice')">🔒</button><span>منطقة الجليد</span></div>
+      <div class="node lock" style="left:77%;top:67%" data-id="silica"><button onclick="selectRegion('silica')">🔒</button><span>منطقة السيليكا</span></div>
+      <div class="node lock" style="left:48%;top:20%" data-id="mountain"><button onclick="selectRegion('mountain')">🔒</button><span>الجبال الشمالية</span></div>
+    </div>
+  </div>
+  <div class="mapcontrols"><button onclick="zoom(-.15)">−</button><button onclick="zoom(.15)">+</button><button onclick="centerMap()">⌖</button></div>
+  <div class="mapinfo">🗺️ <b>خريطة TerraNova</b><br><span class="small">اسحب الخريطة للتجول</span></div>
+</div>
+
+<div id="regionPanel"><h3 id="regionTitle"></h3><p id="regionDesc"></p><div id="regionAction"></div></div>
+
 <div class="stats"><div class="card"><div id="water" class="big">8%</div><div class="label">💧 المياه</div></div><div class="card"><div id="temp" class="big">-35°C</div><div class="label">🌡️ الحرارة</div></div><div class="card"><div id="power" class="big">50</div><div class="label">⚡ الطاقة</div></div></div>
+
 <div class="row"><button onclick="build('extractor')">💧 مستخرج مياه<br>300 💰</button><button onclick="build('solar')">☀️ محطة شمسية<br>250 💰</button><button onclick="build('greenhouse')">🌱 بيت زراعي<br>450 💰</button><button onclick="build('habitat')">🏠 مستعمرة<br>600 💰</button></div>
-<button onclick="advance()">⏩ تسريع دورة الكوكب</button><button onclick="resetGame()" style="background:#713c4a">🔄 بدء لعبة جديدة</button>
+<button class="wide" onclick="advance()">⏩ تسريع دورة الكوكب</button><button class="wide" onclick="resetGame()" style="background:#713c4a">🔄 بدء لعبة جديدة</button>
 <h3>سجل المهمة</h3><div id="log" class="log"></div></div>
+
 <script>
-const K='terranova_web_02';let s=JSON.parse(localStorage.getItem(K))||{credits:1000,oxy:5,water:8,temp:-35,pop:10,power:50,buildings:{extractor:0,solar:0,greenhouse:0,habitat:0},turn:1};
+const K='terranova_web_03';
+let s=JSON.parse(localStorage.getItem(K))||{credits:1000,oxy:5,water:8,temp:-35,pop:10,power:50,buildings:{extractor:0,solar:0,greenhouse:0,habitat:0},turn:1,regions:{mine:false,water:false,solar:false,ice:false,silica:false,mountain:false}};
 const cost={extractor:300,solar:250,greenhouse:450,habitat:600};
-function save(){localStorage.setItem(K,JSON.stringify(s));render()}function msg(x){log.innerHTML='• '+x+'<br>'+log.innerHTML}
-function build(t){if(s.credits<cost[t])return msg('❌ الرصيد غير كافٍ.');s.credits-=cost[t];s.buildings[t]++;if(t==='extractor'){s.water=Math.min(100,s.water+4);s.power-=5}if(t==='solar')s.power+=20;if(t==='greenhouse'){s.oxy=Math.min(100,s.oxy+3);s.water=Math.max(0,s.water-2)}if(t==='habitat'){s.pop+=8;s.power-=8}msg('✅ تم البناء.');save()}
-function advance(){s.turn++;s.credits+=70+s.pop*2;s.water+=s.buildings.extractor*2;s.oxy+=s.buildings.greenhouse;s.temp+=s.oxy>20?1:.2;s.power+=s.buildings.solar*4-s.pop*.15;if(s.water>25&&s.oxy>15)s.pop+=Math.floor(s.pop*.03);s.water=Math.min(100,Math.max(0,s.water));s.oxy=Math.min(100,Math.max(0,s.oxy));msg('⏱️ انتهت الدورة '+s.turn);save()}
+const regions={
+ base:{title:'🏠 القاعدة الرئيسية',desc:'مركز المستعمرة. من هنا تبدأ عملية إعادة تأهيل الكوكب.'},
+ mine:{title:'⛏️ منجم المعادن',desc:'منطقة غنية بالمعادن. فتحها يمنحك دخلًا إضافيًا كل دورة.',cost:500},
+ water:{title:'💧 وادي المياه',desc:'منطقة تحتوي على رواسب جليدية ومياه جوفية. فتحها يزيد إنتاج المياه.',cost:700},
+ solar:{title:'☀️ حقل الطاقة',desc:'سطح مثالي للطاقة الشمسية. فتحه يزيد إنتاج الطاقة.',cost:800},
+ ice:{title:'🧊 منطقة الجليد',desc:'منطقة متقدمة لا تُفتح إلا بعد وصول المياه إلى 35%.',req:'water'},
+ silica:{title:'🔬 منطقة السيليكا',desc:'منطقة صناعية متقدمة تُفتح بعد بناء محطتي طاقة.',req:'solar'},
+ mountain:{title:'🏔️ الجبال الشمالية',desc:'منطقة خطرة تحتوي على موارد نادرة. تحتاج إلى 30% أكسجين.',req:'oxy'}
+};
+function save(){localStorage.setItem(K,JSON.stringify(s));render()}
+function msg(x){document.getElementById('log').innerHTML='• '+x+'<br>'+document.getElementById('log').innerHTML}
+function build(t){
+ if(s.credits<cost[t])return msg('❌ الرصيد غير كافٍ.');
+ s.credits-=cost[t];s.buildings[t]++;
+ if(t==='extractor'){s.water=Math.min(100,s.water+4);s.power-=5}
+ if(t==='solar')s.power+=20
+ if(t==='greenhouse'){s.oxy=Math.min(100,s.oxy+3);s.water=Math.max(0,s.water-2)}
+ if(t==='habitat'){s.pop+=8;s.power-=8}
+ msg('✅ تم البناء: '+t);save()
+}
+function advance(){
+ s.turn++;s.credits+=70+s.pop*2+s.buildings.mine*40;
+ s.water+=s.buildings.extractor*2+(s.regions.water?3:0);
+ s.oxy+=s.buildings.greenhouse+(s.regions.ice?1:0);
+ s.temp+=s.oxy>20?1:.2;
+ s.power+=s.buildings.solar*4-s.pop*.15+(s.regions.solar?5:0);
+ if(s.water>25&&s.oxy>15)s.pop+=Math.floor(s.pop*.03);
+ s.water=Math.min(100,Math.max(0,s.water));s.oxy=Math.min(100,Math.max(0,s.oxy));
+ msg('⏱️ انتهت الدورة '+s.turn);checkUnlocks();save()
+}
+function checkUnlocks(){
+ if(s.water>=35&&!s.regions.ice){s.regions.ice=true;unlockVisual('ice');msg('🔓 تم فتح منطقة الجليد!')}
+ if(s.buildings.solar>=2&&!s.regions.silica){s.regions.silica=true;unlockVisual('silica');msg('🔓 تم فتح منطقة السيليكا!')}
+ if(s.oxy>=30&&!s.regions.mountain){s.regions.mountain=true;unlockVisual('mountain');msg('🔓 تم فتح الجبال الشمالية!')}
+}
+function unlockVisual(id){let n=document.querySelector('.node[data-id="'+id+'"]');if(n)n.classList.remove('lock')}
+function selectRegion(id){
+ const r=regions[id]; if(!r)return;
+ document.querySelectorAll('.node').forEach(n=>n.classList.remove('selected'));
+ document.querySelector('.node[data-id="'+id+'"]')?.classList.add('selected');
+ const panel=document.getElementById('regionPanel');panel.style.display='block';
+ document.getElementById('regionTitle').textContent=r.title;document.getElementById('regionDesc').textContent=r.desc;
+ const a=document.getElementById('regionAction');
+ if(id==='base'){a.innerHTML='<span class="small">المركز الحالي للمستعمرة.</span>';return}
+ const unlocked=s.regions[id];
+ if(unlocked){a.innerHTML='<b>✅ المنطقة مفتوحة</b>';return}
+ let can=true, text='';
+ if(r.cost){can=s.credits>=r.cost;text='فتح المنطقة مقابل '+r.cost+' 💰'}
+ if(r.req==='water'){can=s.water>=35;text='تحتاج إلى 35% مياه'}
+ if(r.req==='solar'){can=s.buildings.solar>=2;text='تحتاج إلى محطتي طاقة شمسية'}
+ if(r.req==='oxy'){can=s.oxy>=30;text='تحتاج إلى 30% أكسجين'}
+ a.innerHTML='<button class="wide" '+(can?'':'disabled')+' onclick="unlock(\''+id+'\')">🔓 '+text+'</button>';
+}
+function unlock(id){
+ const r=regions[id];
+ if(r.cost){if(s.credits<r.cost)return msg('❌ لا يوجد رصيد كافٍ.');s.credits-=r.cost}
+ if(r.req==='water'&&s.water<35)return msg('❌ تحتاج إلى 35% مياه.');
+ if(r.req==='solar'&&s.buildings.solar<2)return msg('❌ تحتاج إلى محطتي طاقة.');
+ if(r.req==='oxy'&&s.oxy<30)return msg('❌ تحتاج إلى 30% أكسجين.');
+ s.regions[id]=true;unlockVisual(id);msg('🌍 تم استكشاف '+r.title);save();selectRegion(id)
+}
+let scale=1,tx=0,ty=0,drag=false,sx=0,sy=0;
+const map=document.getElementById('map'),box=document.getElementById('mapbox');
+function apply(){map.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')'}
+function zoom(z){scale=Math.max(.65,Math.min(1.7,scale+z));apply()}
+function centerMap(){scale=1;tx=0;ty=0;apply()}
+box.addEventListener('pointerdown',e=>{drag=true;sx=e.clientX-tx;sy=e.clientY-ty;map.classList.add('drag');box.setPointerCapture(e.pointerId)})
+box.addEventListener('pointermove',e=>{if(!drag)return;tx=e.clientX-sx;ty=e.clientY-sy;apply()})
+box.addEventListener('pointerup',()=>{drag=false;map.classList.remove('drag')})
+box.addEventListener('pointercancel',()=>{drag=false;map.classList.remove('drag')})
 function resetGame(){if(confirm('بدء لعبة جديدة؟')){localStorage.removeItem(K);location.reload()}}
-function render(){credits.textContent=Math.floor(s.credits);oxy.textContent=Math.floor(s.oxy)+'%';water.textContent=Math.floor(s.water)+'%';temp.textContent=Math.floor(s.temp)+'°C';pop.textContent=Math.floor(s.pop);power.textContent=Math.floor(s.power)}render();msg('🎯 ارفع الأكسجين والمياه وابدأ أول مستعمرة.');
+function render(){
+ document.getElementById('credits').textContent=Math.floor(s.credits);
+ document.getElementById('oxy').textContent=Math.floor(s.oxy)+'%';
+ document.getElementById('water').textContent=Math.floor(s.water)+'%';
+ document.getElementById('temp').textContent=Math.floor(s.temp)+'°C';
+ document.getElementById('pop').textContent=Math.floor(s.pop);
+ document.getElementById('power').textContent=Math.floor(s.power);
+ Object.keys(s.regions).forEach(id=>{if(s.regions[id])unlockVisual(id)});
+}
+render();msg('🎯 استكشف الخريطة وافتح مناطق جديدة وطوّر المستعمرة.');
 </script></body></html>
