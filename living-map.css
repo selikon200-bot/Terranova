@@ -1,0 +1,16 @@
+/* TerraNova Living Map — visual layer */
+#planet.living-planet{position:relative;overflow:hidden;cursor:pointer;transform:translateZ(0);background:radial-gradient(circle at 32% 27%,#9ff5ff 0 5%,transparent 6%),radial-gradient(ellipse at 62% 35%,#4caf72 0 10%,transparent 11%),radial-gradient(ellipse at 38% 62%,#31885e 0 12%,transparent 13%),radial-gradient(ellipse at 72% 68%,#6dbb68 0 8%,transparent 9%),radial-gradient(circle at 45% 45%,#1877a4,#0b4267 58%,#041827 78%);box-shadow:0 0 55px rgba(42,180,230,.55),inset -28px -18px 48px #00101e;animation:planetPulse 5s ease-in-out infinite}
+#planet.living-planet:before{content:"";position:absolute;inset:-8%;border:1px solid rgba(126,231,255,.35);border-radius:50%;animation:orbit 12s linear infinite}
+#planet.living-planet:after{content:"";position:absolute;inset:5%;border-radius:50%;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.12) 48%,transparent 61%);animation:daylight 9s linear infinite}
+.planet-layer{position:absolute;inset:0;z-index:3;pointer-events:none}
+.map-building{position:absolute;transform:translate(-50%,-50%);font-size:22px;filter:drop-shadow(0 0 5px rgba(255,255,255,.5));animation:floatBuilding 2.8s ease-in-out infinite;opacity:.95}
+.map-building span{display:block;font-size:7px;background:rgba(4,21,34,.75);padding:2px 4px;border-radius:5px;margin-top:2px;white-space:nowrap}
+.map-particle{position:absolute;width:4px;height:4px;border-radius:50%;background:#8ff0ff;box-shadow:0 0 8px #8ff0ff;animation:particleRise 2.5s linear infinite;opacity:.8}
+.map-ring{position:absolute;left:50%;top:50%;width:58%;height:18%;border:1px solid rgba(126,231,255,.3);border-radius:50%;transform:translate(-50%,-50%) rotate(-18deg);animation:ringSpin 7s linear infinite}
+@keyframes planetPulse{0%,100%{box-shadow:0 0 45px rgba(42,180,230,.45),inset -28px -18px 48px #00101e}50%{box-shadow:0 0 70px rgba(42,200,245,.72),inset -22px -12px 42px #00101e}}
+@keyframes orbit{to{transform:rotate(360deg)}}
+@keyframes daylight{to{transform:translateX(110%)}}
+@keyframes floatBuilding{0%,100%{margin-top:0}50%{margin-top:-5px}}
+@keyframes particleRise{0%{transform:translateY(20px);opacity:0}25%{opacity:.9}100%{transform:translateY(-65px);opacity:0}}
+@keyframes ringSpin{to{transform:translate(-50%,-50%) rotate(342deg)}}
+@media(prefers-reduced-motion:reduce){#planet.living-planet,.map-building,.map-particle,.map-ring{animation:none}}
