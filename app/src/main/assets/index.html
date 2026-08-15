@@ -2,85 +2,85 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-<title>TerraNova 0.4</title>
+<title>TerraNova</title>
 
 <style>
 * {
     box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
 }
 
 body {
     margin: 0;
-    background:
-        radial-gradient(circle at top, #102b42, #07111f 55%);
-    color: #fff;
+    background: #07111f;
+    color: #ffffff;
     font-family: Arial, sans-serif;
+    overflow-x: hidden;
 }
 
 #app {
     width: 100%;
-    max-width: 680px;
+    max-width: 700px;
     margin: auto;
-    padding: 12px;
+    padding: 15px;
 }
 
 .header {
     text-align: center;
-    padding: 8px 0 12px;
+    padding: 10px 0 15px;
 }
 
 .header h1 {
     margin: 0;
-    font-size: 28px;
+    font-size: 30px;
 }
 
 .header p {
-    margin: 5px 0 0;
+    margin: 6px 0;
     color: #91abc0;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 7px;
-    margin-bottom: 9px;
+    gap: 8px;
+    margin-bottom: 10px;
 }
 
 .card {
-    background: rgba(16,34,53,.95);
+    background: #102235;
     border: 1px solid #1e3a52;
-    border-radius: 13px;
-    padding: 10px 4px;
+    border-radius: 14px;
+    padding: 12px 5px;
     text-align: center;
 }
 
 .value {
-    font-size: 19px;
+    font-size: 21px;
     font-weight: bold;
 }
 
 .label {
-    margin-top: 4px;
+    margin-top: 5px;
     color: #91abc0;
-    font-size: 10px;
+    font-size: 11px;
 }
 
-/* الكوكب */
+/* خريطة الكوكب */
 
 .mapTitle {
     text-align: center;
-    color: #a9c5d8;
+    color: #91abc0;
     font-size: 12px;
-    margin-top: 5px;
+    margin-top: 10px;
 }
 
 .planetArea {
     width: 100%;
-    height: 285px;
+    height: 320px;
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -89,71 +89,244 @@ body {
 }
 
 .planet {
-    width: 235px;
-    height: 235px;
+    width: 250px;
+    height: 250px;
     position: relative;
-    border-radius: 50%;
     flex-shrink: 0;
 
+    border-radius: 50%;
+
     background:
-        /* جبال */
-        radial-gradient(
-            ellipse at 22% 35%,
-            #68776e 0 4%,
-            transparent 5%
-        ),
-
-        radial-gradient(
-            ellipse at 72% 24%,
-            #7c8878 0 5%,
-            transparent 6%
-        ),
-
-        /* غابات */
-        radial-gradient(
-            circle at 34% 60%,
-            #155d42 0 9%,
-            transparent 10%
-        ),
-
-        radial-gradient(
-            circle at 68% 68%,
-            #27704b 0 11%,
-            transparent 12%
-        ),
-
-        /* قارات */
-        radial-gradient(
-            ellipse at 45% 45%,
-            #4e9a65 0 12%,
-            transparent 13%
-        ),
-
-        radial-gradient(
-            ellipse at 70% 45%,
-            #75b66a 0 10%,
-            transparent 11%
-        ),
-
-        radial-gradient(
-            ellipse at 30% 72%,
-            #38865b 0 10%,
-            transparent 11%
-        ),
-
-        /* المحيط */
-        radial-gradient(
-            circle at 35% 30%,
-            #4ebde0 0 5%,
-            transparent 6%
-        ),
-
-        radial-gradient(
-            circle at 50% 50%,
-            #16769d,
-            #0a405f 55%,
-            #031b2b 78%
-        );
+        radial-gradient(circle at 30% 30%, #6bd6ff 0 7%, transparent 8%),
+        radial-gradient(circle at 60% 62%, #48a878 0 14%, transparent 15%),
+        radial-gradient(circle at 30% 70%, #388f68 0 11%, transparent 12%),
+        radial-gradient(circle at 65% 30%, #72c47a 0 9%, transparent 10%),
+        radial-gradient(circle at 45% 48%, #2b86ad 0 20%, transparent 21%),
+        radial-gradient(circle at 50% 50%, #1870a0, #0a3658 60%, #041522 75%);
 
     box-shadow:
-        0 0 45
+        0 0 40px rgba(42,157,202,.6),
+        inset -30px -20px 45px #00101e;
+
+    transform-origin: center;
+    transition: transform .15s ease;
+}
+
+.planet::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle at 25% 25%,
+            rgba(255,255,255,.35),
+            transparent 18%
+        );
+
+    pointer-events: none;
+}
+
+/* المباني */
+
+.building {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(5,20,30,.9);
+    border: 2px solid white;
+    border-radius: 50%;
+
+    font-size: 13px;
+
+    box-shadow: 0 0 10px rgba(255,255,255,.5);
+
+    animation: buildingPulse 2s infinite;
+}
+
+@keyframes buildingPulse {
+    0%,100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+.b1 {
+    top: 27%;
+    left: 32%;
+}
+
+.b2 {
+    top: 55%;
+    left: 58%;
+}
+
+.b3 {
+    top: 64%;
+    left: 35%;
+}
+
+.b4 {
+    top: 38%;
+    left: 65%;
+}
+
+.mapControls {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.mapControls button {
+    width: 50px;
+    padding: 9px;
+    background: #16334a;
+}
+
+.mapInfo {
+    text-align: center;
+    color: #91abc0;
+    font-size: 11px;
+    margin-bottom: 12px;
+}
+
+/* المباني */
+
+.buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+button {
+    border: 0;
+    border-radius: 13px;
+    padding: 14px 8px;
+    background: #1d8f72;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+button:active {
+    transform: scale(.97);
+}
+
+.advance {
+    width: 100%;
+    margin-top: 10px;
+    background: #176fa0;
+    font-size: 16px;
+}
+
+.logBox {
+    margin-top: 15px;
+    background: #081725;
+    border-radius: 12px;
+    padding: 10px;
+}
+
+.logTitle {
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.log {
+    height: 100px;
+    overflow-y: auto;
+    color: #b9d2e2;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.buildingsList {
+    margin-top: 12px;
+    background: #102235;
+    border: 1px solid #1e3a52;
+    border-radius: 12px;
+    padding: 10px;
+}
+
+.buildingsList h3 {
+    margin: 0 0 8px;
+    font-size: 14px;
+}
+
+.buildingRow {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid #1e3a52;
+    color: #b9d2e2;
+    font-size: 12px;
+}
+
+.buildingRow:last-child {
+    border-bottom: 0;
+}
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+    <div class="header">
+        <h1>🌍 TerraNova</h1>
+        <p>بناء كوكب جديد — الإصدار 0.3</p>
+    </div>
+
+    <div class="stats">
+
+        <div class="card">
+            <div id="credits" class="value">1000</div>
+            <div class="label">💰 الرصيد</div>
+        </div>
+
+        <div class="card">
+            <div id="oxy" class="value">5%</div>
+            <div class="label">🫁 الأكسجين</div>
+        </div>
+
+        <div class="card">
+            <div id="pop" class="value">10</div>
+            <div class="label">👨‍🚀 السكان</div>
+        </div>
+
+    </div>
+
+    <div class="mapTitle">
+        🪐 خريطة TerraNova
+    </div>
+
+    <div class="planetArea" id="planetArea">
+
+        <div class="planet" id="planet">
+
+            <div class="building b1" id="building1">💧</div>
+            <div class="building b2" id="building2">☀️</div>
+            <div class="building b3" id="building3">🌱</div>
+            <div class="building b4" id="building4">🏠</div>
+
+        </div>
+
+    </div>
+
+    <div class="mapControls">
+        <button onclick="zoomPlanet(1)">＋</button>
+        <button onclick="resetPlanet()">🌍</button>
+        <button onclick="zoomPlanet(-1)">−</button>
+    </div>
+
+    <div class="mapInfo">
+        اسحب الكوك
