@@ -1,0 +1,14 @@
+/* TerraNova Living World 1.1 */
+#planet.world-live{isolation:isolate}
+.world-effects{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden;border-radius:50%}
+.world-sky{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 72% 25%,rgba(255,242,177,.72),transparent 17%),linear-gradient(110deg,rgba(0,0,30,.72),rgba(0,0,0,0));opacity:var(--night,.15);mix-blend-mode:multiply;transition:opacity .15s linear}
+.world-weather{position:absolute;inset:0;border-radius:50%;opacity:.65}
+.world-weather:before{content:"";position:absolute;inset:-15%;background:radial-gradient(ellipse at 30% 35%,rgba(255,255,255,.32) 0 8%,transparent 10%),radial-gradient(ellipse at 70% 60%,rgba(255,255,255,.22) 0 10%,transparent 12%);animation:weatherDrift 13s linear infinite}
+.world-weather[data-type="storm"]:after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(105deg,transparent 0 28px,rgba(150,210,255,.18) 30px 32px);animation:rain 1s linear infinite}
+.world-vehicles{position:absolute;inset:0;z-index:9}
+.world-vehicles span{position:absolute;font-size:15px;filter:drop-shadow(0 0 7px rgba(126,231,255,.8));animation:vehicleOrbit 11s linear infinite}
+.world-vehicles span:first-child{left:46%;top:13%}.world-vehicles span:last-child{left:72%;top:55%;animation-duration:17s;animation-direction:reverse}
+@keyframes weatherDrift{from{transform:translateX(-12%) rotate(0)}to{transform:translateX(12%) rotate(8deg)}}
+@keyframes rain{from{transform:translateY(-25px)}to{transform:translateY(25px)}}
+@keyframes vehicleOrbit{from{transform:rotate(0deg) translateX(70px) rotate(0deg)}to{transform:rotate(360deg) translateX(70px) rotate(-360deg)}}
+@media(prefers-reduced-motion:reduce){.world-weather:before,.world-weather[data-type="storm"]:after,.world-vehicles span{animation:none}}
