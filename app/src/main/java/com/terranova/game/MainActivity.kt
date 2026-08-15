@@ -2,8 +2,6 @@ package com.terranova.game
 
 import android.app.Activity
 import android.os.Bundle
-import android.webkit.WebChromeClient
-import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 
@@ -16,29 +14,11 @@ class MainActivity : Activity() {
 
         web = WebView(this)
 
-        with(web.settings) {
-            javaScriptEnabled = true
-            domStorageEnabled = true
-            databaseEnabled = true
-
-            allowFileAccess = true
-            allowContentAccess = true
-
-            cacheMode = WebSettings.LOAD_DEFAULT
-
-            builtInZoomControls = false
-            displayZoomControls = false
-
-            loadWithOverviewMode = false
-            useWideViewPort = false
-
-            mediaPlaybackRequiresUserGesture = false
-        }
+        web.settings.javaScriptEnabled = true
+        web.settings.domStorageEnabled = true
+        web.settings.allowFileAccess = true
 
         web.webViewClient = WebViewClient()
-        web.webChromeClient = WebChromeClient()
-
-        web.setBackgroundColor(0xFF07111F.toInt())
 
         setContentView(web)
 
@@ -51,11 +31,5 @@ class MainActivity : Activity() {
         } else {
             super.onBackPressed()
         }
-    }
-
-    override fun onDestroy() {
-        web.stopLoading()
-        web.destroy()
-        super.onDestroy()
     }
 }
