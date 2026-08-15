@@ -1,197 +1,804 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
 <title>TerraNova</title>
 
 <style>
+
+*{
+    box-sizing:border-box;
+}
+
 body{
     margin:0;
     background:#07111f;
     color:white;
     font-family:Arial,sans-serif;
-    text-align:center;
 }
 
 #app{
-    max-width:600px;
+    width:100%;
+    max-width:700px;
     margin:auto;
-    padding:20px;
+    padding:12px;
+}
+
+.header{
+    text-align:center;
+    padding:8px 0 12px;
+}
+
+.header h1{
+    margin:0;
+    font-size:30px;
+}
+
+.header p{
+    margin:5px 0;
+    color:#91abc0;
+    font-size:12px;
+}
+
+
+/* الإحصائيات */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:7px;
+    margin-bottom:9px;
 }
 
 .card{
     background:#102235;
-    border-radius:15px;
-    padding:15px;
-    margin:10px 0;
+    border:1px solid #1e3a52;
+    border-radius:14px;
+    padding:11px 4px;
+    text-align:center;
 }
 
-button{
-    width:100%;
-    padding:18px;
-    margin:6px 0;
-    border:0;
-    border-radius:12px;
-    background:#1d8f72;
-    color:white;
-    font-size:16px;
+.value{
+    font-size:19px;
     font-weight:bold;
 }
 
-#planet{
-    width:220px;
-    height:220px;
-    margin:25px auto;
+.label{
+    margin-top:4px;
+    color:#91abc0;
+    font-size:10px;
+}
+
+
+/* الكوكب */
+
+.planet{
+    width:230px;
+    height:230px;
+    max-width:65vw;
+    max-height:65vw;
+
+    margin:20px auto;
+
     border-radius:50%;
 
     background:
-    radial-gradient(circle at 35% 30%,#6bd6ff 0 8%,transparent 9%),
-    radial-gradient(circle at 60% 62%,#48a878 0 14%,transparent 15%),
-    radial-gradient(circle at 50% 50%,#1870a0,#0a3658 60%,#041522 75%);
 
-    box-shadow:0 0 40px #249dcc;
+    radial-gradient(
+        circle at 35% 30%,
+        #6bd6ff 0 8%,
+        transparent 9%
+    ),
+
+    radial-gradient(
+        circle at 60% 62%,
+        #48a878 0 14%,
+        transparent 15%
+    ),
+
+    radial-gradient(
+        circle at 30% 70%,
+        #388f68 0 10%,
+        transparent 11%
+    ),
+
+    radial-gradient(
+        circle at 65% 30%,
+        #72c47a 0 8%,
+        transparent 9%
+    ),
+
+    radial-gradient(
+        circle at 50% 50%,
+        #1870a0,
+        #0a3658 60%,
+        #041522 75%
+    );
+
+    box-shadow:
+
+    0 0 40px rgba(42,157,202,.6),
+
+    inset -25px -15px 45px #00101e;
+
+    transition:.3s;
 }
 
-#log{
-    height:120px;
-    overflow:auto;
-    text-align:right;
+
+/* الأزرار */
+
+.buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+
+button{
+    border:0;
+    border-radius:13px;
+
+    padding:14px 7px;
+
+    min-height:60px;
+
+    background:#1d8f72;
+
+    color:white;
+
     font-size:13px;
+
+    font-weight:bold;
+
+    cursor:pointer;
 }
+
+button:active{
+    transform:scale(.97);
+}
+
+
+/* التشغيل التلقائي */
+
+.auto{
+    margin-top:10px;
+
+    padding:10px;
+
+    text-align:center;
+
+    background:#102235;
+
+    border:1px solid #1e3a52;
+
+    border-radius:12px;
+
+    color:#91abc0;
+
+    font-size:11px;
+}
+
+.dot{
+    display:inline-block;
+
+    width:8px;
+    height:8px;
+
+    background:#39d98a;
+
+    border-radius:50%;
+
+    margin-left:5px;
+}
+
+
+/* سجل المهمة */
+
+.logBox{
+    margin-top:12px;
+
+    background:#081725;
+
+    border-radius:12px;
+
+    padding:10px;
+}
+
+.logTitle{
+    font-weight:bold;
+
+    font-size:13px;
+
+    margin-bottom:6px;
+}
+
+.log{
+    height:100px;
+
+    overflow-y:auto;
+
+    color:#b9d2e2;
+
+    font-size:11px;
+
+    line-height:1.8;
+}
+
+
+@media(max-width:400px){
+
+    #app{
+        padding:8px;
+    }
+
+    .header h1{
+        font-size:26px;
+    }
+
+    .planet{
+        width:210px;
+        height:210px;
+    }
+
+    .value{
+        font-size:17px;
+    }
+
+    button{
+        font-size:12px;
+    }
+
+}
+
 </style>
+
 </head>
+
 
 <body>
 
+
 <div id="app">
+
+
+<div class="header">
 
 <h1>🌍 TerraNova</h1>
 
-<div class="card">
-💰 الرصيد:
-<strong id="credits">1000</strong>
+<p>
+بناء كوكب جديد — الإصدار 0.3
+</p>
+
 </div>
 
+
+<!-- الموارد الأساسية -->
+
+<div class="stats">
+
+
 <div class="card">
-🔄 الدورة:
-<strong id="turn">1</strong>
+
+<div id="credits"
+class="value">
+1000
 </div>
 
-<div id="planet"></div>
+<div class="label">
+💰 الرصيد
+</div>
 
-<button id="testButton">
-🧪 اختبار اللعبة
+</div>
+
+
+<div class="card">
+
+<div id="oxy"
+class="value">
+5%
+</div>
+
+<div class="label">
+🫁 الأكسجين
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div id="pop"
+class="value">
+10
+</div>
+
+<div class="label">
+👨‍🚀 السكان
+</div>
+
+</div>
+
+
+</div>
+
+
+<!-- الكوكب -->
+
+<div class="planet"
+id="planet">
+</div>
+
+
+<!-- موارد الكوكب -->
+
+<div class="stats">
+
+
+<div class="card">
+
+<div id="water"
+class="value">
+8%
+</div>
+
+<div class="label">
+💧 المياه
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div id="temp"
+class="value">
+-35°C
+</div>
+
+<div class="label">
+🌡️ الحرارة
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div id="power"
+class="value">
+50
+</div>
+
+<div class="label">
+⚡ الطاقة
+</div>
+
+</div>
+
+
+</div>
+
+
+<!-- البناء -->
+
+<div class="buttons">
+
+
+<button id="waterBtn">
+
+💧 مستخرج مياه
+
+<br>
+
+<small>
+300 💰
+</small>
+
 </button>
 
-<button id="waterButton">
-💧 بناء مستخرج مياه — 300 💰
+
+<button id="solarBtn">
+
+☀️ محطة شمسية
+
+<br>
+
+<small>
+250 💰
+</small>
+
 </button>
 
-<div class="card">
-📜 سجل اللعبة
 
-<div id="log"></div>
+<button id="greenBtn">
+
+🌱 بيت زراعي
+
+<br>
+
+<small>
+450 💰
+</small>
+
+</button>
+
+
+<button id="habitatBtn">
+
+🏠 مستعمرة
+
+<br>
+
+<small>
+600 💰
+</small>
+
+</button>
+
+
+</div>
+
+
+<!-- الدورة -->
+
+<div class="auto">
+
+<span class="dot"></span>
+
+🔄 الكوكب يتطور تلقائيًا كل 5 ثوانٍ
+
+<br>
+
+الدورة:
+
+<strong id="turn">
+1
+</strong>
+
+</div>
+
+
+<!-- السجل -->
+
+<div class="logBox">
+
+<div class="logTitle">
+📜 سجل المهمة
+</div>
+
+<div id="log"
+class="log">
 </div>
 
 </div>
+
+
+</div>
+
 
 <script>
 
-var credits = 1000;
 
-var turn = 1;
+/* حالة اللعبة */
 
+var game={
 
-function logMessage(message){
+credits:1000,
 
-    var log = document.getElementById("log");
+oxy:5,
 
-    log.innerHTML =
-        "• " + message +
-        "<br>" +
-        log.innerHTML;
-}
+water:8,
 
+temp:-35,
 
-function testGame(){
+pop:10,
 
-    credits += 100;
+power:50,
 
-    document.getElementById("credits").innerText =
-        credits;
+extractor:0,
 
-    logMessage("✅ الزر يعمل بنجاح!");
+solar:0,
 
-}
+greenhouse:0,
 
+habitat:0,
 
-function buildWater(){
+turn:1
 
-    if(credits < 300){
-
-        logMessage("❌ لا يوجد رصيد كافٍ.");
-
-        return;
-    }
-
-    credits -= 300;
-
-    document.getElementById("credits").innerText =
-        credits;
-
-    logMessage("💧 تم بناء مستخرج مياه.");
-
-}
+};
 
 
-function automaticTurn(){
 
-    turn++;
+/* إضافة رسالة للسجل */
 
-    credits += 100;
+function logMessage(text){
 
-    document.getElementById("turn").innerText =
-        turn;
+var log=
+document.getElementById("log");
 
-    document.getElementById("credits").innerText =
-        credits;
-
-    logMessage(
-        "🔄 دورة جديدة رقم " +
-        turn
-    );
+log.innerHTML=
+"• "+
+text+
+"<br>"+
+log.innerHTML;
 
 }
 
 
-document
-.getElementById("testButton")
-.addEventListener(
-    "click",
-    testGame
-);
+
+/* تحديث الشاشة */
+
+function render(){
+
+document.getElementById("credits")
+.innerText=
+Math.floor(game.credits);
 
 
-document
-.getElementById("waterButton")
-.addEventListener(
-    "click",
-    buildWater
-);
+document.getElementById("oxy")
+.innerText=
+Math.floor(game.oxy)+"%";
 
+
+document.getElementById("water")
+.innerText=
+Math.floor(game.water)+"%";
+
+
+document.getElementById("temp")
+.innerText=
+Math.floor(game.temp)+"°C";
+
+
+document.getElementById("pop")
+.innerText=
+Math.floor(game.pop);
+
+
+document.getElementById("power")
+.innerText=
+Math.floor(game.power);
+
+
+document.getElementById("turn")
+.innerText=
+game.turn;
+
+}
+
+
+
+/* البناء */
+
+function build(type){
+
+var costs={
+
+extractor:300,
+
+solar:250,
+
+greenhouse:450,
+
+habitat:600
+
+};
+
+
+var cost=
+costs[type];
+
+
+if(game.credits<cost){
 
 logMessage(
-    "🚀 TerraNova تعمل."
+"❌ الرصيد غير كافٍ."
+);
+
+return;
+
+}
+
+
+game.credits-=cost;
+
+game[type]++;
+
+
+
+if(type==="extractor"){
+
+game.water+=4;
+
+game.power-=5;
+
+logMessage(
+"💧 تم بناء مستخرج مياه."
+);
+
+}
+
+
+
+else if(type==="solar"){
+
+game.power+=20;
+
+logMessage(
+"☀️ تم بناء محطة شمسية."
+);
+
+}
+
+
+
+else if(type==="greenhouse"){
+
+game.oxy+=3;
+
+game.water-=2;
+
+logMessage(
+"🌱 تم بناء بيت زراعي."
+);
+
+}
+
+
+
+else if(type==="habitat"){
+
+game.pop+=8;
+
+game.power-=8;
+
+logMessage(
+"🏠 تم بناء مستعمرة."
+);
+
+}
+
+
+
+game.water=
+Math.max(
+0,
+Math.min(100,game.water)
 );
 
 
-setInterval(
-    automaticTurn,
-    5000
+game.oxy=
+Math.max(
+0,
+Math.min(100,game.oxy)
 );
 
-</script>
 
-</body>
-</html>
+render();
+
+}
+
+
+
+/* دورة الكوكب */
+
+function advance(){
+
+game.turn++;
+
+
+/* دخل الدورة */
+
+game.credits+=
+70+
+game.pop*2;
+
+
+/* المياه */
+
+game.water+=
+game.extractor*2;
+
+
+/* الأكسجين */
+
+game.oxy+=
+game.greenhouse;
+
+
+/* الحرارة */
+
+if(game.oxy>20){
+
+game.temp+=1;
+
+}
+
+else{
+
+game.temp+=0.2;
+
+}
+
+
+/* الطاقة */
+
+game.power+=
+
+game.solar*4
+-
+game.pop*0.15;
+
+
+/* نمو السكان */
+
+if(
+game.water>25 &&
+game.oxy>15
+){
+
+game.pop+=
+Math.floor(
+game.pop*0.03
+);
+
+}
+
+
+/* حدود الموارد */
+
+game.water=
+Math.max(
+0,
+Math.min(
+100,
+game.water
+)
+);
+
+
+game.oxy=
+Math.max(
+0,
+Math.min(
+100,
+game.oxy
+)
+);
+
+
+/* السجل */
+
+logMessage(
+
+"🔄 انتهت الدورة "+
+game.turn+
+" — الكوكب يتطور."
+
+);
+
+
+render();
+
+}
+
+
+
+/* ربط الأزرار */
+
+
+document
+.getElementById("waterBtn")
+.onclick=function(){
+
+build("extractor");
+
+};
+
+
+document
+.getElementBy
