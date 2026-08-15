@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-<title>TerraNova</title>
+<title>TerraNova 0.3</title>
 
 <style>
 * {
@@ -14,8 +14,9 @@
 body {
     margin: 0;
     background: #07111f;
-    color: #ffffff;
+    color: white;
     font-family: Arial, sans-serif;
+    overflow-x: hidden;
 }
 
 #app {
@@ -67,26 +68,143 @@ body {
     font-size: 11px;
 }
 
+/* =========================
+   خريطة الكوكب
+========================= */
+
+.mapTitle {
+    text-align: center;
+    color: #91abc0;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.planetArea {
+    width: 100%;
+    height: 320px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    touch-action: none;
+}
+
 .planet {
     width: 250px;
     height: 250px;
-    max-width: 70vw;
-    max-height: 70vw;
-    margin: 20px auto;
+    position: relative;
+    flex-shrink: 0;
 
     border-radius: 50%;
 
     background:
-        radial-gradient(circle at 35% 30%, #6bd6ff 0 8%, transparent 9%),
+        radial-gradient(circle at 30% 30%, #6bd6ff 0 7%, transparent 8%),
         radial-gradient(circle at 60% 62%, #48a878 0 14%, transparent 15%),
-        radial-gradient(circle at 30% 70%, #388f68 0 10%, transparent 11%),
-        radial-gradient(circle at 65% 30%, #72c47a 0 8%, transparent 9%),
+        radial-gradient(circle at 30% 70%, #388f68 0 11%, transparent 12%),
+        radial-gradient(circle at 65% 30%, #72c47a 0 9%, transparent 10%),
+        radial-gradient(circle at 45% 48%, #2b86ad 0 20%, transparent 21%),
         radial-gradient(circle at 50% 50%, #1870a0, #0a3658 60%, #041522 75%);
 
     box-shadow:
-        0 0 40px rgba(42,157,202,.5),
-        inset -25px -15px 45px #00101e;
+        0 0 40px rgba(42,157,202,.6),
+        inset -30px -20px 45px #00101e;
+
+    transform-origin: center;
+    transition: transform .15s ease;
 }
+
+.planet::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle at 25% 25%,
+            rgba(255,255,255,.35),
+            transparent 18%
+        );
+
+    pointer-events: none;
+}
+
+/* المباني */
+
+.building {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(5,20,30,.9);
+    border: 2px solid white;
+    border-radius: 50%;
+
+    font-size: 13px;
+
+    box-shadow: 0 0 10px rgba(255,255,255,.5);
+
+    animation: buildingPulse 2s infinite;
+}
+
+@keyframes buildingPulse {
+    0%,100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+.b1 {
+    top: 27%;
+    left: 32%;
+}
+
+.b2 {
+    top: 55%;
+    left: 58%;
+}
+
+.b3 {
+    top: 64%;
+    left: 35%;
+}
+
+.b4 {
+    top: 38%;
+    left: 65%;
+}
+
+.mapControls {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.mapControls button {
+    width: 50px;
+    padding: 9px;
+    background: #16334a;
+}
+
+.mapInfo {
+    text-align: center;
+    color: #91abc0;
+    font-size: 11px;
+    margin-bottom: 12px;
+}
+
+/* =========================
+   المباني
+========================= */
 
 .buttons {
     display: grid;
@@ -134,6 +252,32 @@ button:active {
     font-size: 12px;
     line-height: 1.8;
 }
+
+.buildingsList {
+    margin-top: 12px;
+    background: #102235;
+    border: 1px solid #1e3a52;
+    border-radius: 12px;
+    padding: 10px;
+}
+
+.buildingsList h3 {
+    margin: 0 0 8px;
+    font-size: 14px;
+}
+
+.buildingRow {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid #1e3a52;
+    color: #b9d2e2;
+    font-size: 12px;
+}
+
+.buildingRow:last-child {
+    border-bottom: 0;
+}
 </style>
 </head>
 
@@ -143,7 +287,7 @@ button:active {
 
     <div class="header">
         <h1>🌍 TerraNova</h1>
-        <p>بناء كوكب جديد — الإصدار 0.2</p>
+        <p>بناء كوكب جديد — الإصدار 0.3</p>
     </div>
 
     <div class="stats">
@@ -165,7 +309,32 @@ button:active {
 
     </div>
 
-    <div class="planet"></div>
+    <div class="mapTitle">
+        🪐 خريطة TerraNova
+    </div>
+
+    <div class="planetArea" id="planetArea">
+
+        <div class="planet" id="planet">
+
+            <div class="building b1" id="building1">💧</div>
+            <div class="building b2" id="building2">☀️</div>
+            <div class="building b3" id="building3">🌱</div>
+            <div class="building b4" id="building4">🏠</div>
+
+        </div>
+
+    </div>
+
+    <div class="mapControls">
+        <button onclick="zoomPlanet(1)">＋</button>
+        <button onclick="resetPlanet()">🌍</button>
+        <button onclick="zoomPlanet(-1)">−</button>
+    </div>
+
+    <div class="mapInfo">
+        اسحب الكوكب لتحريك الخريطة • استخدم ＋ و − للتكبير
+    </div>
 
     <div class="stats">
 
@@ -214,6 +383,32 @@ button:active {
 
     </div>
 
+    <div class="buildingsList">
+
+        <h3>🏗️ مستعمرات TerraNova</h3>
+
+        <div class="buildingRow">
+            <span>💧 مستخرج المياه</span>
+            <span id="extractorCount">0</span>
+        </div>
+
+        <div class="buildingRow">
+            <span>☀️ المحطات الشمسية</span>
+            <span id="solarCount">0</span>
+        </div>
+
+        <div class="buildingRow">
+            <span>🌱 البيوت الزراعية</span>
+            <span id="greenhouseCount">0</span>
+        </div>
+
+        <div class="buildingRow">
+            <span>🏠 المستعمرات</span>
+            <span id="habitatCount">0</span>
+        </div>
+
+    </div>
+
     <button class="advance" onclick="advance()">
         ⏩ تسريع دورة الكوكب
     </button>
@@ -233,20 +428,33 @@ button:active {
 <script>
 
 var game = {
+
     credits: 1000,
+
     oxy: 5,
+
     water: 8,
+
     temp: -35,
+
     pop: 10,
+
     power: 50,
 
     extractor: 0,
+
     solar: 0,
+
     greenhouse: 0,
+
     habitat: 0,
 
     turn: 1
 };
+
+/* =========================
+   سجل اللعبة
+========================= */
 
 function logMessage(text) {
 
@@ -256,12 +464,21 @@ function logMessage(text) {
         "• " + text + "<br>" + log.innerHTML;
 }
 
+
+/* =========================
+   بناء المنشآت
+========================= */
+
 function build(type) {
 
     var costs = {
+
         extractor: 300,
+
         solar: 250,
+
         greenhouse: 450,
+
         habitat: 600
     };
 
@@ -281,48 +498,77 @@ function build(type) {
     if (type === "extractor") {
 
         game.water += 4;
+
         game.power -= 5;
 
-        logMessage("💧 تم بناء مستخرج مياه.");
-
-    } else if (type === "solar") {
-
-        game.power += 20;
-
-        logMessage("☀️ تم بناء محطة شمسية.");
-
-    } else if (type === "greenhouse") {
-
-        game.oxy += 3;
-        game.water -= 2;
-
-        logMessage("🌱 تم بناء بيت زراعي.");
-
-    } else if (type === "habitat") {
-
-        game.pop += 8;
-        game.power -= 8;
-
-        logMessage("🏠 تم بناء مستعمرة.");
+        logMessage(
+            "💧 تم بناء مستخرج مياه جديد."
+        );
 
     }
 
+    else if (type === "solar") {
+
+        game.power += 20;
+
+        logMessage(
+            "☀️ تم بناء محطة شمسية جديدة."
+        );
+
+    }
+
+    else if (type === "greenhouse") {
+
+        game.oxy += 3;
+
+        game.water -= 2;
+
+        logMessage(
+            "🌱 تم بناء بيت زراعي جديد."
+        );
+
+    }
+
+    else if (type === "habitat") {
+
+        game.pop += 8;
+
+        game.power -= 8;
+
+        logMessage(
+            "🏠 تم بناء مستعمرة جديدة."
+        );
+    }
+
+    updateBuildings();
+
     render();
 }
+
+
+/* =========================
+   دورة الكوكب
+========================= */
 
 function advance() {
 
     game.turn++;
 
-    game.credits += 70 + game.pop * 2;
+    game.credits +=
+        70 + game.pop * 2;
 
-    game.water += game.extractor * 2;
+    game.water +=
+        game.extractor * 2;
 
-    game.oxy += game.greenhouse;
+    game.oxy +=
+        game.greenhouse;
 
     if (game.oxy > 20) {
+
         game.temp += 1;
+
     } else {
+
         game.temp += 0.2;
     }
 
@@ -330,47 +576,246 @@ function advance() {
         game.solar * 4 -
         game.pop * 0.15;
 
-    if (game.water > 25 && game.oxy > 15) {
+    if (
+        game.water > 25 &&
+        game.oxy > 15
+    ) {
 
         game.pop +=
             Math.floor(game.pop * 0.03);
     }
 
     game.water =
-        Math.max(0, Math.min(100, game.water));
+        Math.max(
+            0,
+            Math.min(100, game.water)
+        );
 
     game.oxy =
-        Math.max(0, Math.min(100, game.oxy));
+        Math.max(
+            0,
+            Math.min(100, game.oxy)
+        );
 
     logMessage(
         "⏩ انتهت الدورة " +
         game.turn +
-        " — حصلت على موارد جديدة."
+        " — الكوكب تطور."
     );
 
     render();
 }
 
+
+/* =========================
+   إظهار عدد المباني
+========================= */
+
+function updateBuildings() {
+
+    document.getElementById(
+        "extractorCount"
+    ).innerText = game.extractor;
+
+    document.getElementById(
+        "solarCount"
+    ).innerText = game.solar;
+
+    document.getElementById(
+        "greenhouseCount"
+    ).innerText = game.greenhouse;
+
+    document.getElementById(
+        "habitatCount"
+    ).innerText = game.habitat;
+
+    /*
+       إظهار المباني حسب عددها
+    */
+
+    document.getElementById(
+        "building1"
+    ).style.display =
+        game.extractor > 0 ? "flex" : "none";
+
+    document.getElementById(
+        "building2"
+    ).style.display =
+        game.solar > 0 ? "flex" : "none";
+
+    document.getElementById(
+        "building3"
+    ).style.display =
+        game.greenhouse > 0 ? "flex" : "none";
+
+    document.getElementById(
+        "building4"
+    ).style.display =
+        game.habitat > 0 ? "flex" : "none";
+}
+
+
+/* =========================
+   تحديث البيانات
+========================= */
+
 function render() {
 
-    document.getElementById("credits").innerText =
+    document.getElementById(
+        "credits"
+    ).innerText =
         Math.floor(game.credits);
 
-    document.getElementById("oxy").innerText =
+    document.getElementById(
+        "oxy"
+    ).innerText =
         Math.floor(game.oxy) + "%";
 
-    document.getElementById("water").innerText =
+    document.getElementById(
+        "water"
+    ).innerText =
         Math.floor(game.water) + "%";
 
-    document.getElementById("temp").innerText =
+    document.getElementById(
+        "temp"
+    ).innerText =
         Math.floor(game.temp) + "°C";
 
-    document.getElementById("pop").innerText =
+    document.getElementById(
+        "pop"
+    ).innerText =
         Math.floor(game.pop);
 
-    document.getElementById("power").innerText =
+    document.getElementById(
+        "power"
+    ).innerText =
         Math.floor(game.power);
 }
+
+
+/* =========================
+   التحكم في الكوكب
+========================= */
+
+var planet = document.getElementById("planet");
+
+var scale = 1;
+
+var rotationX = 0;
+
+var rotationY = 0;
+
+var dragging = false;
+
+var startX = 0;
+
+var startY = 0;
+
+
+function updatePlanet() {
+
+    planet.style.transform =
+        "scale(" + scale + ")" +
+        " rotateX(" + rotationX + "deg)" +
+        " rotateY(" + rotationY + "deg)";
+}
+
+
+function zoomPlanet(direction) {
+
+    scale += direction * 0.15;
+
+    scale =
+        Math.max(
+            0.7,
+            Math.min(1.8, scale)
+        );
+
+    updatePlanet();
+}
+
+
+function resetPlanet() {
+
+    scale = 1;
+
+    rotationX = 0;
+
+    rotationY = 0;
+
+    updatePlanet();
+}
+
+
+/* =========================
+   السحب باللمس
+========================= */
+
+planet.addEventListener(
+    "pointerdown",
+    function(e) {
+
+        dragging = true;
+
+        startX = e.clientX;
+
+        startY = e.clientY;
+
+        planet.setPointerCapture(
+            e.pointerId
+        );
+    }
+);
+
+
+planet.addEventListener(
+    "pointermove",
+    function(e) {
+
+        if (!dragging) return;
+
+        var dx =
+            e.clientX - startX;
+
+        var dy =
+            e.clientY - startY;
+
+        rotationY += dx * 0.4;
+
+        rotationX -= dy * 0.4;
+
+        startX = e.clientX;
+
+        startY = e.clientY;
+
+        updatePlanet();
+    }
+);
+
+
+planet.addEventListener(
+    "pointerup",
+    function() {
+
+        dragging = false;
+    }
+);
+
+
+planet.addEventListener(
+    "pointercancel",
+    function() {
+
+        dragging = false;
+    }
+);
+
+
+/* =========================
+   تشغيل اللعبة
+========================= */
+
+updateBuildings();
 
 render();
 
