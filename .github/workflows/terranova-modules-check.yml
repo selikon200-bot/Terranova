@@ -1,0 +1,25 @@
+name: TerraNova Modules Check
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'game/**'
+      - '.github/workflows/terranova-modules-check.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  check-modules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check JavaScript modules
+        run: |
+          node --check game/economy.js
+          node --check game/events.js
+          node --check game/map-data.js
+          node --check game/achievements.js
+      - name: Report
+        run: echo "TerraNova 0.8 gameplay modules passed syntax validation."
