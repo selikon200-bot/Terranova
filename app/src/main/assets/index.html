@@ -1,56 +1,384 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TerraNova Test</title>
-    <style>
-        body {
-            margin: 0;
-            background: #07111f;
-            color: white;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 40px 20px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-        h1 {
-            font-size: 32px;
-        }
+<title>TerraNova</title>
 
-        p {
-            color: #9ec3d8;
-        }
+<style>
+* {
+    box-sizing: border-box;
+}
 
-        button {
-            width: 100%;
-            max-width: 350px;
-            padding: 16px;
-            border: 0;
-            border-radius: 14px;
-            background: #1d8f72;
-            color: white;
-            font-size: 18px;
-        }
-    </style>
+body {
+    margin: 0;
+    background: #07111f;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+}
+
+#app {
+    width: 100%;
+    max-width: 700px;
+    margin: auto;
+    padding: 15px;
+}
+
+.header {
+    text-align: center;
+    padding: 10px 0 15px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 30px;
+}
+
+.header p {
+    margin: 6px 0;
+    color: #91abc0;
+    font-size: 13px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.card {
+    background: #102235;
+    border: 1px solid #1e3a52;
+    border-radius: 14px;
+    padding: 12px 5px;
+    text-align: center;
+}
+
+.value {
+    font-size: 21px;
+    font-weight: bold;
+}
+
+.label {
+    margin-top: 5px;
+    color: #91abc0;
+    font-size: 11px;
+}
+
+.planet {
+    width: 250px;
+    height: 250px;
+    max-width: 70vw;
+    max-height: 70vw;
+    margin: 20px auto;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(circle at 35% 30%, #6bd6ff 0 8%, transparent 9%),
+        radial-gradient(circle at 60% 62%, #48a878 0 14%, transparent 15%),
+        radial-gradient(circle at 30% 70%, #388f68 0 10%, transparent 11%),
+        radial-gradient(circle at 65% 30%, #72c47a 0 8%, transparent 9%),
+        radial-gradient(circle at 50% 50%, #1870a0, #0a3658 60%, #041522 75%);
+
+    box-shadow:
+        0 0 40px rgba(42,157,202,.5),
+        inset -25px -15px 45px #00101e;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+button {
+    border: 0;
+    border-radius: 13px;
+    padding: 14px 8px;
+    background: #1d8f72;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+button:active {
+    transform: scale(.97);
+}
+
+.advance {
+    width: 100%;
+    margin-top: 10px;
+    background: #176fa0;
+    font-size: 16px;
+}
+
+.logBox {
+    margin-top: 15px;
+    background: #081725;
+    border-radius: 12px;
+    padding: 10px;
+}
+
+.logTitle {
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.log {
+    height: 100px;
+    overflow-y: auto;
+    color: #b9d2e2;
+    font-size: 12px;
+    line-height: 1.8;
+}
+</style>
 </head>
 
 <body>
 
-    <h1>🌍 TerraNova</h1>
+<div id="app">
 
-    <p>التطبيق يعمل بنجاح ✅</p>
+    <div class="header">
+        <h1>🌍 TerraNova</h1>
+        <p>بناء كوكب جديد — الإصدار 0.2</p>
+    </div>
 
-    <button onclick="test()">
-        اختبار اللعبة
+    <div class="stats">
+
+        <div class="card">
+            <div id="credits" class="value">1000</div>
+            <div class="label">💰 الرصيد</div>
+        </div>
+
+        <div class="card">
+            <div id="oxy" class="value">5%</div>
+            <div class="label">🫁 الأكسجين</div>
+        </div>
+
+        <div class="card">
+            <div id="pop" class="value">10</div>
+            <div class="label">👨‍🚀 السكان</div>
+        </div>
+
+    </div>
+
+    <div class="planet"></div>
+
+    <div class="stats">
+
+        <div class="card">
+            <div id="water" class="value">8%</div>
+            <div class="label">💧 المياه</div>
+        </div>
+
+        <div class="card">
+            <div id="temp" class="value">-35°C</div>
+            <div class="label">🌡️ الحرارة</div>
+        </div>
+
+        <div class="card">
+            <div id="power" class="value">50</div>
+            <div class="label">⚡ الطاقة</div>
+        </div>
+
+    </div>
+
+    <div class="buttons">
+
+        <button onclick="build('extractor')">
+            💧 مستخرج مياه
+            <br>
+            <small>300 💰</small>
+        </button>
+
+        <button onclick="build('solar')">
+            ☀️ محطة شمسية
+            <br>
+            <small>250 💰</small>
+        </button>
+
+        <button onclick="build('greenhouse')">
+            🌱 بيت زراعي
+            <br>
+            <small>450 💰</small>
+        </button>
+
+        <button onclick="build('habitat')">
+            🏠 مستعمرة
+            <br>
+            <small>600 💰</small>
+        </button>
+
+    </div>
+
+    <button class="advance" onclick="advance()">
+        ⏩ تسريع دورة الكوكب
     </button>
 
-    <script>
-        function test() {
-            document.querySelector("p").textContent =
-                "JavaScript يعمل بنجاح 🎮";
-        }
-    </script>
+    <div class="logBox">
+
+        <div class="logTitle">
+            📜 سجل المهمة
+        </div>
+
+        <div id="log" class="log"></div>
+
+    </div>
+
+</div>
+
+<script>
+
+var game = {
+    credits: 1000,
+    oxy: 5,
+    water: 8,
+    temp: -35,
+    pop: 10,
+    power: 50,
+
+    extractor: 0,
+    solar: 0,
+    greenhouse: 0,
+    habitat: 0,
+
+    turn: 1
+};
+
+function logMessage(text) {
+
+    var log = document.getElementById("log");
+
+    log.innerHTML =
+        "• " + text + "<br>" + log.innerHTML;
+}
+
+function build(type) {
+
+    var costs = {
+        extractor: 300,
+        solar: 250,
+        greenhouse: 450,
+        habitat: 600
+    };
+
+    var cost = costs[type];
+
+    if (game.credits < cost) {
+
+        logMessage("❌ الرصيد غير كافٍ.");
+
+        return;
+    }
+
+    game.credits -= cost;
+
+    game[type]++;
+
+    if (type === "extractor") {
+
+        game.water += 4;
+        game.power -= 5;
+
+        logMessage("💧 تم بناء مستخرج مياه.");
+
+    } else if (type === "solar") {
+
+        game.power += 20;
+
+        logMessage("☀️ تم بناء محطة شمسية.");
+
+    } else if (type === "greenhouse") {
+
+        game.oxy += 3;
+        game.water -= 2;
+
+        logMessage("🌱 تم بناء بيت زراعي.");
+
+    } else if (type === "habitat") {
+
+        game.pop += 8;
+        game.power -= 8;
+
+        logMessage("🏠 تم بناء مستعمرة.");
+
+    }
+
+    render();
+}
+
+function advance() {
+
+    game.turn++;
+
+    game.credits += 70 + game.pop * 2;
+
+    game.water += game.extractor * 2;
+
+    game.oxy += game.greenhouse;
+
+    if (game.oxy > 20) {
+        game.temp += 1;
+    } else {
+        game.temp += 0.2;
+    }
+
+    game.power +=
+        game.solar * 4 -
+        game.pop * 0.15;
+
+    if (game.water > 25 && game.oxy > 15) {
+
+        game.pop +=
+            Math.floor(game.pop * 0.03);
+    }
+
+    game.water =
+        Math.max(0, Math.min(100, game.water));
+
+    game.oxy =
+        Math.max(0, Math.min(100, game.oxy));
+
+    logMessage(
+        "⏩ انتهت الدورة " +
+        game.turn +
+        " — حصلت على موارد جديدة."
+    );
+
+    render();
+}
+
+function render() {
+
+    document.getElementById("credits").innerText =
+        Math.floor(game.credits);
+
+    document.getElementById("oxy").innerText =
+        Math.floor(game.oxy) + "%";
+
+    document.getElementById("water").innerText =
+        Math.floor(game.water) + "%";
+
+    document.getElementById("temp").innerText =
+        Math.floor(game.temp) + "°C";
+
+    document.getElementById("pop").innerText =
+        Math.floor(game.pop);
+
+    document.getElementById("power").innerText =
+        Math.floor(game.power);
+}
+
+render();
+
+logMessage(
+    "🚀 المهمة الأولى: ارفع المياه والأكسجين وابدأ أول مستعمرة."
+);
+
+</script>
 
 </body>
 </html>
