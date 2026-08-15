@@ -2,11 +2,12 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>TerraNova 0.3</title>
+<title>TerraNova</title>
 
 <style>
+
 * {
     box-sizing: border-box;
 }
@@ -22,37 +23,36 @@ body {
     width: 100%;
     max-width: 700px;
     margin: auto;
-    padding: 12px;
+    padding: 15px;
 }
 
 .header {
     text-align: center;
-    padding: 8px 0 12px;
+    margin-bottom: 15px;
 }
 
 .header h1 {
     margin: 0;
-    font-size: 29px;
+    font-size: 30px;
 }
 
 .header p {
-    margin: 5px 0;
     color: #91abc0;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 7px;
-    margin-bottom: 9px;
+    gap: 8px;
+    margin-bottom: 10px;
 }
 
 .card {
     background: #102235;
     border: 1px solid #1e3a52;
-    border-radius: 13px;
-    padding: 11px 4px;
+    border-radius: 14px;
+    padding: 12px 5px;
     text-align: center;
 }
 
@@ -62,101 +62,29 @@ body {
 }
 
 .label {
-    margin-top: 4px;
+    margin-top: 5px;
     color: #91abc0;
-    font-size: 10px;
-}
-
-.mapTitle {
-    text-align: center;
-    color: #91abc0;
-    font-size: 12px;
-    margin: 8px 0;
-}
-
-.planetArea {
-    height: 285px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+    font-size: 11px;
 }
 
 .planet {
-    width: 230px;
-    height: 230px;
-    position: relative;
+    width: 250px;
+    height: 250px;
+    max-width: 70vw;
+    max-height: 70vw;
+    margin: 20px auto;
     border-radius: 50%;
 
     background:
-        radial-gradient(circle at 30% 30%, #6bd6ff 0 7%, transparent 8%),
+        radial-gradient(circle at 35% 30%, #6bd6ff 0 8%, transparent 9%),
         radial-gradient(circle at 60% 62%, #48a878 0 14%, transparent 15%),
-        radial-gradient(circle at 30% 70%, #388f68 0 11%, transparent 12%),
-        radial-gradient(circle at 65% 30%, #72c47a 0 9%, transparent 10%),
+        radial-gradient(circle at 30% 70%, #388f68 0 10%, transparent 11%),
+        radial-gradient(circle at 65% 30%, #72c47a 0 8%, transparent 9%),
         radial-gradient(circle at 50% 50%, #1870a0, #0a3658 60%, #041522 75%);
 
     box-shadow:
-        0 0 40px rgba(42,157,202,.6),
-        inset -30px -20px 45px #00101e;
-
-    transition: transform .15s ease;
-}
-
-.building {
-    position: absolute;
-    width: 25px;
-    height: 25px;
-
-    display: none;
-    align-items: center;
-    justify-content: center;
-
-    background: #081725;
-    border: 2px solid white;
-    border-radius: 50%;
-
-    font-size: 13px;
-}
-
-.b1 {
-    top: 27%;
-    left: 32%;
-}
-
-.b2 {
-    top: 55%;
-    left: 58%;
-}
-
-.b3 {
-    top: 64%;
-    left: 35%;
-}
-
-.b4 {
-    top: 38%;
-    left: 65%;
-}
-
-.mapControls {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 10px;
-}
-
-.mapControls button {
-    width: 50px;
-    min-height: 42px;
-    padding: 5px;
-    background: #16334a;
-}
-
-.mapInfo {
-    text-align: center;
-    color: #91abc0;
-    font-size: 10px;
-    margin-bottom: 10px;
+        0 0 40px rgba(42,157,202,.5),
+        inset -25px -15px 45px #00101e;
 }
 
 .buttons {
@@ -168,11 +96,10 @@ body {
 button {
     border: 0;
     border-radius: 13px;
-    padding: 14px 7px;
-    min-height: 60px;
+    padding: 14px 8px;
     background: #1d8f72;
     color: white;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: bold;
 }
 
@@ -180,54 +107,19 @@ button:active {
     transform: scale(.97);
 }
 
-.buildingsList {
-    margin-top: 10px;
+.auto {
+    margin-top: 12px;
+    padding: 10px;
+    text-align: center;
     background: #102235;
     border: 1px solid #1e3a52;
     border-radius: 12px;
-    padding: 10px;
-}
-
-.buildingsList h3 {
-    margin: 0 0 7px;
-    font-size: 13px;
-}
-
-.buildingRow {
-    display: flex;
-    justify-content: space-between;
-    padding: 6px 0;
-    border-bottom: 1px solid #1e3a52;
-    color: #b9d2e2;
-    font-size: 11px;
-}
-
-.buildingRow:last-child {
-    border-bottom: 0;
-}
-
-.autoBox {
-    margin-top: 10px;
-    padding: 10px;
-    border-radius: 12px;
-    background: #0c1d2d;
-    border: 1px solid #1e3a52;
-    text-align: center;
     color: #91abc0;
-    font-size: 11px;
-}
-
-.autoDot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    background: #39d98a;
-    border-radius: 50%;
-    margin-left: 5px;
+    font-size: 12px;
 }
 
 .logBox {
-    margin-top: 10px;
+    margin-top: 15px;
     background: #081725;
     border-radius: 12px;
     padding: 10px;
@@ -235,31 +127,30 @@ button:active {
 
 .logTitle {
     font-weight: bold;
-    font-size: 13px;
-    margin-bottom: 5px;
+    margin-bottom: 7px;
 }
 
 .log {
-    height: 90px;
+    height: 100px;
     overflow-y: auto;
     color: #b9d2e2;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.8;
 }
 
 @media (max-width: 400px) {
 
     #app {
-        padding: 8px;
+        padding: 10px;
     }
 
-    .planetArea {
-        height: 255px;
+    .header h1 {
+        font-size: 26px;
     }
 
     .planet {
-        width: 210px;
-        height: 210px;
+        width: 220px;
+        height: 220px;
     }
 
     .value {
@@ -267,10 +158,10 @@ button:active {
     }
 
     button {
-        min-height: 56px;
         font-size: 12px;
     }
 }
+
 </style>
 </head>
 
@@ -279,9 +170,15 @@ button:active {
 <div id="app">
 
     <div class="header">
+
         <h1>🌍 TerraNova</h1>
-        <p>بناء كوكب جديد — الإصدار 0.3</p>
+
+        <p>
+            بناء كوكب جديد — الإصدار 0.3
+        </p>
+
     </div>
+
 
     <div class="stats">
 
@@ -302,34 +199,9 @@ button:active {
 
     </div>
 
-    <div class="mapTitle">
-        🪐 خريطة TerraNova
-    </div>
 
-    <div class="planetArea">
+    <div class="planet"></div>
 
-        <div class="planet" id="planet">
-
-            <div class="building b1" id="building1">💧</div>
-            <div class="building b2" id="building2">☀️</div>
-            <div class="building b3" id="building3">🌱</div>
-            <div class="building b4" id="building4">🏠</div>
-
-        </div>
-
-    </div>
-
-    <div class="mapControls">
-
-        <button id="zoomIn">＋</button>
-        <button id="resetPlanet">🌍</button>
-        <button id="zoomOut">−</button>
-
-    </div>
-
-    <div class="mapInfo">
-        اسحب الكوكب لتحريكه
-    </div>
 
     <div class="stats">
 
@@ -350,27 +222,28 @@ button:active {
 
     </div>
 
+
     <div class="buttons">
 
-        <button id="extractorButton">
+        <button id="waterBtn">
             💧 مستخرج مياه
             <br>
             <small>300 💰</small>
         </button>
 
-        <button id="solarButton">
+        <button id="solarBtn">
             ☀️ محطة شمسية
             <br>
             <small>250 💰</small>
         </button>
 
-        <button id="greenhouseButton">
+        <button id="greenBtn">
             🌱 بيت زراعي
             <br>
             <small>450 💰</small>
         </button>
 
-        <button id="habitatButton">
+        <button id="habitatBtn">
             🏠 مستعمرة
             <br>
             <small>600 💰</small>
@@ -378,44 +251,18 @@ button:active {
 
     </div>
 
-    <div class="buildingsList">
 
-        <h3>🏗️ مستعمرات TerraNova</h3>
+    <div class="auto">
 
-        <div class="buildingRow">
-            <span>💧 مستخرج المياه</span>
-            <span id="extractorCount">0</span>
-        </div>
-
-        <div class="buildingRow">
-            <span>☀️ المحطات الشمسية</span>
-            <span id="solarCount">0</span>
-        </div>
-
-        <div class="buildingRow">
-            <span>🌱 البيوت الزراعية</span>
-            <span id="greenhouseCount">0</span>
-        </div>
-
-        <div class="buildingRow">
-            <span>🏠 المستعمرات</span>
-            <span id="habitatCount">0</span>
-        </div>
-
-    </div>
-
-    <div class="autoBox">
-
-        <span class="autoDot"></span>
-
-        🔄 الكوكب يتطور تلقائيًا كل 5 ثوانٍ
+        🔄 الكوكب يتطور تلقائيًا
 
         <br>
 
-        الدورة:
-        <strong id="turnText">1</strong>
+        الدورة الحالية:
+        <strong id="turn">1</strong>
 
     </div>
+
 
     <div class="logBox">
 
@@ -429,68 +276,59 @@ button:active {
 
 </div>
 
+
 <script>
 
 var game = {
+
     credits: 1000,
+
     oxy: 5,
+
     water: 8,
+
     temp: -35,
+
     pop: 10,
+
     power: 50,
 
     extractor: 0,
+
     solar: 0,
+
     greenhouse: 0,
+
     habitat: 0,
 
     turn: 1
+
 };
 
 
-function logMessage(text) {
+function logMessage(message) {
 
     var log = document.getElementById("log");
 
     log.innerHTML =
-        "• " + text + "<br>" +
+        "• " +
+        message +
+        "<br>" +
         log.innerHTML;
+
 }
 
 
 function render() {
 
-    document.getElementById("credits").textContent =
+    document.getElementById("credits").innerText =
         Math.floor(game.credits);
 
-    document.getElementById("oxy").textContent =
+    document.getElementById("oxy").innerText =
         Math.floor(game.oxy) + "%";
 
-    document.getElementById("water").textContent =
+    document.getElementById("water").innerText =
         Math.floor(game.water) + "%";
 
-    document.getElementById("temp").textContent =
-        Math.floor(game.temp) + "°C";
-
-    document.getElementById("pop").textContent =
-        Math.floor(game.pop);
-
-    document.getElementById("power").textContent =
-        Math.floor(game.power);
-
-    document.getElementById("turnText").textContent =
-        game.turn;
-
-    document.getElementById("extractorCount").textContent =
-        game.extractor;
-
-    document.getElementById("solarCount").textContent =
-        game.solar;
-
-    document.getElementById("greenhouseCount").textContent =
-        game.greenhouse;
-
-    document.getElementById("habitatCount").textContent =
-        game.habitat;
-
-    document.getElementBy
+    document.getElementById("temp").innerText =
+       
