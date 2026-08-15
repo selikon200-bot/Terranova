@@ -13,29 +13,23 @@ permissions:
 
 jobs:
   validate:
-    name: Validate TerraNova Web
+    name: Validate TerraNova
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Check required files
+      - name: Validate files and JavaScript
         run: |
-          test -f index.html
-          test -f app/src/main/assets/index.html
-
-      - name: Validate HTML structure
-        run: |
+          test -s index.html
+          test -s app/src/main/assets/index.html
           python - <<'PY'
           from pathlib import Path
           for p in [Path('index.html'), Path('app/src/main/assets/index.html')]:
-              s = p.read_text(encoding='utf-8')
-              checks = ['<html', '<script', '</script>', '</html>']
-              missing = [x for x in checks if x not in s]
-              if missing:
-                  raise SystemExit(f'{p}: missing {missing}')
-              print(f'{p}: OK ({len(s)} characters)')
+              s=p.read_text(encoding='utf-8')
+              required=['<html','<script>','</script>','</html>','waterBtn','solarBtn','greenBtn','habitatBtn','setInterval(advance,5000)']
+              missing=[x for x in required if x not in s]
+              if missing: raise SystemExit(f'{p}: missing {missing}')
+              if s.count('<script') != s.count('</script>'): raise SystemExit(f'{p}: unbalanced script tags')
+              if 'document.getElementBy' in s and 'document.getElementById' not in s: raise SystemExit(f'{p}: broken DOM selector')
+              print(f'{p}: OK ({len(s)} chars)')
           PY
-
-      - name: Report result
-        run: echo "TerraNova validation completed successfully."
