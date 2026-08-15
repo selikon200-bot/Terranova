@@ -1,0 +1,4 @@
+// TerraNova Trade System 0.8
+export const market={water:12,energy:10,food:8,minerals:20};
+export function trade(state,resource,amount){if(amount<=0)return state;const price=market[resource];if(!price)return state;const next=structuredClone(state);next.resources=next.resources||{};const available=next.resources[resource]||0;if(available<amount)return state;next.resources[resource]-=amount;next.credits=(next.credits||0)+Math.floor(amount*price);return next;}
+export function buy(state,resource,amount){if(amount<=0)return state;const price=market[resource];if(!price)return state;const next=structuredClone(state);const total=amount*price;if((next.credits||0)<total)return state;next.credits-=total;next.resources=next.resources||{};next.resources[resource]=(next.resources[resource]||0)+amount;return next;}
