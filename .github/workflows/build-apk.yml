@@ -2,39 +2,73 @@ name: Build TerraNova APK
 
 on:
   workflow_dispatch:
+
   push:
     branches:
       - main
+    paths:
+      - 'app/**'
+      - 'index.html'
+      - 'build.gradle.kts'
+      - 'settings.gradle.kts'
+      - 'gradle.properties'
+      - '.github/workflows/build-apk.yml'
+
+concurrency:
+  group: terranova-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   build:
+    name: Build TerraNova APK
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: 📥 Checkout TerraNova
         uses: actions/checkout@v4
 
-      - name: Setup Java 17
+      - name: ☕ Setup Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Setup Android SDK
+      - name: 🤖 Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install Android SDK
+      - name: 📦 Install Android SDK
         run: |
           sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
-      - name: Setup Gradle
+      - name: 🐘 Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.7'
 
-      - name: Generate Gradle Wrapper
-        run: gradle wrapper --gradle-version 8.7
+      - name: 🔧 Generate Gradle Wrapper
+        run: |
+          gradle wrapper --gradle-version 8.7
 
+      - name: 🏗️ Build Debug APK
+        run: |
+          ./gradlew --no-daemon assembleDebug
+
+      - name: 📱 Rename APK
+        run: |
+          mkdir -p release
+          cp app/build/outputs/apk/debug/*.apk \
+            release/TerraNova-${{ github.run_number }}.apk
+
+      - name: 📤 Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: TerraNova-APK-${{ github.run_number }}
+          path: release/TerraNova-${{ github.run_number }}.apk
+          if-no-files-found: error
+          retention-days: 14
       - name: Build TerraNova APK
         run: ./gradlew --no-daemon assembleDebug
 
