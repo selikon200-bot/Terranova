@@ -3,165 +3,62 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>TerraNova</title>
 
 <style>
-
-* {
-    box-sizing: border-box;
+body{
+    margin:0;
+    background:#07111f;
+    color:white;
+    font-family:Arial,sans-serif;
+    text-align:center;
 }
 
-body {
-    margin: 0;
-    background: #07111f;
-    color: white;
-    font-family: Arial, sans-serif;
+#app{
+    max-width:600px;
+    margin:auto;
+    padding:20px;
 }
 
-#app {
-    width: 100%;
-    max-width: 700px;
-    margin: auto;
-    padding: 15px;
+.card{
+    background:#102235;
+    border-radius:15px;
+    padding:15px;
+    margin:10px 0;
 }
 
-.header {
-    text-align: center;
-    margin-bottom: 15px;
+button{
+    width:100%;
+    padding:18px;
+    margin:6px 0;
+    border:0;
+    border-radius:12px;
+    background:#1d8f72;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
 }
 
-.header h1 {
-    margin: 0;
-    font-size: 30px;
-}
-
-.header p {
-    color: #91abc0;
-    font-size: 13px;
-}
-
-.stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 10px;
-}
-
-.card {
-    background: #102235;
-    border: 1px solid #1e3a52;
-    border-radius: 14px;
-    padding: 12px 5px;
-    text-align: center;
-}
-
-.value {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.label {
-    margin-top: 5px;
-    color: #91abc0;
-    font-size: 11px;
-}
-
-.planet {
-    width: 250px;
-    height: 250px;
-    max-width: 70vw;
-    max-height: 70vw;
-    margin: 20px auto;
-    border-radius: 50%;
+#planet{
+    width:220px;
+    height:220px;
+    margin:25px auto;
+    border-radius:50%;
 
     background:
-        radial-gradient(circle at 35% 30%, #6bd6ff 0 8%, transparent 9%),
-        radial-gradient(circle at 60% 62%, #48a878 0 14%, transparent 15%),
-        radial-gradient(circle at 30% 70%, #388f68 0 10%, transparent 11%),
-        radial-gradient(circle at 65% 30%, #72c47a 0 8%, transparent 9%),
-        radial-gradient(circle at 50% 50%, #1870a0, #0a3658 60%, #041522 75%);
+    radial-gradient(circle at 35% 30%,#6bd6ff 0 8%,transparent 9%),
+    radial-gradient(circle at 60% 62%,#48a878 0 14%,transparent 15%),
+    radial-gradient(circle at 50% 50%,#1870a0,#0a3658 60%,#041522 75%);
 
-    box-shadow:
-        0 0 40px rgba(42,157,202,.5),
-        inset -25px -15px 45px #00101e;
+    box-shadow:0 0 40px #249dcc;
 }
 
-.buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
+#log{
+    height:120px;
+    overflow:auto;
+    text-align:right;
+    font-size:13px;
 }
-
-button {
-    border: 0;
-    border-radius: 13px;
-    padding: 14px 8px;
-    background: #1d8f72;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-button:active {
-    transform: scale(.97);
-}
-
-.auto {
-    margin-top: 12px;
-    padding: 10px;
-    text-align: center;
-    background: #102235;
-    border: 1px solid #1e3a52;
-    border-radius: 12px;
-    color: #91abc0;
-    font-size: 12px;
-}
-
-.logBox {
-    margin-top: 15px;
-    background: #081725;
-    border-radius: 12px;
-    padding: 10px;
-}
-
-.logTitle {
-    font-weight: bold;
-    margin-bottom: 7px;
-}
-
-.log {
-    height: 100px;
-    overflow-y: auto;
-    color: #b9d2e2;
-    font-size: 12px;
-    line-height: 1.8;
-}
-
-@media (max-width: 400px) {
-
-    #app {
-        padding: 10px;
-    }
-
-    .header h1 {
-        font-size: 26px;
-    }
-
-    .planet {
-        width: 220px;
-        height: 220px;
-    }
-
-    .value {
-        font-size: 17px;
-    }
-
-    button {
-        font-size: 12px;
-    }
-}
-
 </style>
 </head>
 
@@ -169,166 +66,132 @@ button:active {
 
 <div id="app">
 
-    <div class="header">
+<h1>🌍 TerraNova</h1>
 
-        <h1>🌍 TerraNova</h1>
+<div class="card">
+💰 الرصيد:
+<strong id="credits">1000</strong>
+</div>
 
-        <p>
-            بناء كوكب جديد — الإصدار 0.3
-        </p>
+<div class="card">
+🔄 الدورة:
+<strong id="turn">1</strong>
+</div>
 
-    </div>
+<div id="planet"></div>
 
+<button id="testButton">
+🧪 اختبار اللعبة
+</button>
 
-    <div class="stats">
+<button id="waterButton">
+💧 بناء مستخرج مياه — 300 💰
+</button>
 
-        <div class="card">
-            <div id="credits" class="value">1000</div>
-            <div class="label">💰 الرصيد</div>
-        </div>
+<div class="card">
+📜 سجل اللعبة
 
-        <div class="card">
-            <div id="oxy" class="value">5%</div>
-            <div class="label">🫁 الأكسجين</div>
-        </div>
-
-        <div class="card">
-            <div id="pop" class="value">10</div>
-            <div class="label">👨‍🚀 السكان</div>
-        </div>
-
-    </div>
-
-
-    <div class="planet"></div>
-
-
-    <div class="stats">
-
-        <div class="card">
-            <div id="water" class="value">8%</div>
-            <div class="label">💧 المياه</div>
-        </div>
-
-        <div class="card">
-            <div id="temp" class="value">-35°C</div>
-            <div class="label">🌡️ الحرارة</div>
-        </div>
-
-        <div class="card">
-            <div id="power" class="value">50</div>
-            <div class="label">⚡ الطاقة</div>
-        </div>
-
-    </div>
-
-
-    <div class="buttons">
-
-        <button id="waterBtn">
-            💧 مستخرج مياه
-            <br>
-            <small>300 💰</small>
-        </button>
-
-        <button id="solarBtn">
-            ☀️ محطة شمسية
-            <br>
-            <small>250 💰</small>
-        </button>
-
-        <button id="greenBtn">
-            🌱 بيت زراعي
-            <br>
-            <small>450 💰</small>
-        </button>
-
-        <button id="habitatBtn">
-            🏠 مستعمرة
-            <br>
-            <small>600 💰</small>
-        </button>
-
-    </div>
-
-
-    <div class="auto">
-
-        🔄 الكوكب يتطور تلقائيًا
-
-        <br>
-
-        الدورة الحالية:
-        <strong id="turn">1</strong>
-
-    </div>
-
-
-    <div class="logBox">
-
-        <div class="logTitle">
-            📜 سجل المهمة
-        </div>
-
-        <div id="log" class="log"></div>
-
-    </div>
+<div id="log"></div>
+</div>
 
 </div>
 
-
 <script>
 
-var game = {
+var credits = 1000;
 
-    credits: 1000,
-
-    oxy: 5,
-
-    water: 8,
-
-    temp: -35,
-
-    pop: 10,
-
-    power: 50,
-
-    extractor: 0,
-
-    solar: 0,
-
-    greenhouse: 0,
-
-    habitat: 0,
-
-    turn: 1
-
-};
+var turn = 1;
 
 
-function logMessage(message) {
+function logMessage(message){
 
     var log = document.getElementById("log");
 
     log.innerHTML =
-        "• " +
-        message +
+        "• " + message +
         "<br>" +
         log.innerHTML;
+}
+
+
+function testGame(){
+
+    credits += 100;
+
+    document.getElementById("credits").innerText =
+        credits;
+
+    logMessage("✅ الزر يعمل بنجاح!");
 
 }
 
 
-function render() {
+function buildWater(){
+
+    if(credits < 300){
+
+        logMessage("❌ لا يوجد رصيد كافٍ.");
+
+        return;
+    }
+
+    credits -= 300;
 
     document.getElementById("credits").innerText =
-        Math.floor(game.credits);
+        credits;
 
-    document.getElementById("oxy").innerText =
-        Math.floor(game.oxy) + "%";
+    logMessage("💧 تم بناء مستخرج مياه.");
 
-    document.getElementById("water").innerText =
-        Math.floor(game.water) + "%";
+}
 
-    document.getElementById("temp").innerText =
-       
+
+function automaticTurn(){
+
+    turn++;
+
+    credits += 100;
+
+    document.getElementById("turn").innerText =
+        turn;
+
+    document.getElementById("credits").innerText =
+        credits;
+
+    logMessage(
+        "🔄 دورة جديدة رقم " +
+        turn
+    );
+
+}
+
+
+document
+.getElementById("testButton")
+.addEventListener(
+    "click",
+    testGame
+);
+
+
+document
+.getElementById("waterButton")
+.addEventListener(
+    "click",
+    buildWater
+);
+
+
+logMessage(
+    "🚀 TerraNova تعمل."
+);
+
+
+setInterval(
+    automaticTurn,
+    5000
+);
+
+</script>
+
+</body>
+</html>
