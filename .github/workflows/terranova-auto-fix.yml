@@ -1,0 +1,41 @@
+name: TerraNova Safe Check
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'app/src/main/assets/index.html'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate TerraNova Web
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check required files
+        run: |
+          test -f index.html
+          test -f app/src/main/assets/index.html
+
+      - name: Validate HTML structure
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          for p in [Path('index.html'), Path('app/src/main/assets/index.html')]:
+              s = p.read_text(encoding='utf-8')
+              checks = ['<html', '<script', '</script>', '</html>']
+              missing = [x for x in checks if x not in s]
+              if missing:
+                  raise SystemExit(f'{p}: missing {missing}')
+              print(f'{p}: OK ({len(s)} characters)')
+          PY
+
+      - name: Report result
+        run: echo "TerraNova validation completed successfully."
