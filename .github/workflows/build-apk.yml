@@ -27,20 +27,14 @@ jobs:
         run: |
           sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
-      - name: Extract TerraNova project
-        run: |
-          mkdir project
-          unzip -q TerraNova_APK_Build_Project_0.2.zip -d project
-          PROJECT_DIR=$(find project -name settings.gradle.kts -print -quit | xargs dirname)
-          echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
 
       - name: Build Debug APK
-        run: |
-          cd "$PROJECT_DIR"
-          gradle --no-daemon assembleDebug
+        run: ./gradlew --no-daemon assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: TerraNova-APK
-          path: "${{ env.PROJECT_DIR }}/app/build/outputs/apk/debug/*.apk"
+          path: "app/build/outputs/apk/debug/*.apk"
