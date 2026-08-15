@@ -1,406 +1,56 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TerraNova Test</title>
+    <style>
+        body {
+            margin: 0;
+            background: #07111f;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 40px 20px;
+        }
 
-<title>TerraNova</title>
+        h1 {
+            font-size: 32px;
+        }
 
-<style>
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
+        p {
+            color: #9ec3d8;
+        }
 
-body{
-  margin:0;
-  background:
-    radial-gradient(circle at top,#123b59 0,#071522 42%,#030912 100%);
-  color:#ecf8ff;
-  font-family:Arial,sans-serif;
-  min-height:100vh;
-}
-
-button{
-  font-family:inherit;
-  touch-action:manipulation;
-}
-
-#app{
-  width:100%;
-  max-width:760px;
-  margin:auto;
-  padding:14px;
-}
-
-/* HEADER */
-
-.header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:12px;
-}
-
-.logo{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.logoIcon{
-  width:48px;
-  height:48px;
-  border-radius:50%;
-  background:
-    radial-gradient(circle at 35% 30%,#7be3ff,#1b78a6 48%,#061c2d 72%);
-  box-shadow:0 0 25px #27bce766;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:25px;
-}
-
-h1{
-  margin:0;
-  font-size:25px;
-}
-
-.version{
-  color:#8fb0c9;
-  font-size:11px;
-  margin-top:3px;
-}
-
-.status{
-  background:#102b3c;
-  border:1px solid #1d536d;
-  border-radius:20px;
-  padding:7px 10px;
-  font-size:11px;
-  color:#7ce8c1;
-}
-
-/* STATS */
-
-.stats{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  margin:10px 0;
-}
-
-.card{
-  background:linear-gradient(145deg,#10283a,#0b1b2a);
-  border:1px solid #1d3e55;
-  border-radius:16px;
-  padding:11px 7px;
-  text-align:center;
-  box-shadow:0 5px 18px #0005;
-}
-
-.big{
-  font-size:20px;
-  font-weight:bold;
-}
-
-.label{
-  margin-top:4px;
-  font-size:11px;
-  color:#8faabd;
-}
-
-/* PLANET */
-
-.planetArea{
-  padding:12px 0 5px;
-  text-align:center;
-}
-
-.planet{
-  width:min(68vw,285px);
-  height:min(68vw,285px);
-  margin:5px auto 12px;
-  border-radius:50%;
-  position:relative;
-  overflow:hidden;
-
-  background:
-    radial-gradient(circle at 34% 27%,#b7f2ff 0 2%,transparent 3%),
-    radial-gradient(circle at 65% 35%,#72c982 0 8%,transparent 9%),
-    radial-gradient(circle at 34% 68%,#429b6d 0 11%,transparent 12%),
-    radial-gradient(circle at 63% 72%,#3c8d64 0 7%,transparent 8%),
-    radial-gradient(circle at 50% 50%,#2384ad 0,#10577b 48%,#06243a 75%);
-
-  box-shadow:
-    0 0 35px #28b7e755,
-    0 0 75px #1475a633,
-    inset -25px -15px 45px #00101e;
-}
-
-.planet:after{
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:50%;
-  background:linear-gradient(
-    120deg,
-    #ffffff18,
-    transparent 35%,
-    #00000035 75%
-  );
-}
-
-.planetGlow{
-  width:100%;
-  height:10px;
-  background:#2ec9ff33;
-  filter:blur(12px);
-}
-
-/* MISSION */
-
-.mission{
-  background:#0b1c2b;
-  border:1px solid #1d4056;
-  border-radius:16px;
-  padding:12px;
-  margin:10px 0;
-}
-
-.missionTitle{
-  font-size:14px;
-  font-weight:bold;
-  margin-bottom:8px;
-}
-
-.progress{
-  height:8px;
-  background:#06121d;
-  border-radius:20px;
-  overflow:hidden;
-}
-
-.progressBar{
-  height:100%;
-  width:10%;
-  background:linear-gradient(90deg,#1dd6a0,#41b8ff);
-  border-radius:20px;
-  transition:.3s;
-}
-
-.missionText{
-  margin-top:7px;
-  color:#9db8c9;
-  font-size:11px;
-}
-
-/* BUILDINGS */
-
-.sectionTitle{
-  font-size:15px;
-  margin:15px 3px 8px;
-}
-
-.buildGrid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-}
-
-.buildBtn{
-  min-height:72px;
-  border:1px solid #24506a;
-  border-radius:15px;
-  background:linear-gradient(145deg,#14344a,#0c2333);
-  color:white;
-  padding:9px;
-  font-size:14px;
-  font-weight:bold;
-  box-shadow:0 4px 12px #0004;
-}
-
-.buildBtn:active{
-  transform:scale(.97);
-}
-
-.buildBtn small{
-  display:block;
-  color:#7ee3c4;
-  font-size:11px;
-  margin-top:6px;
-}
-
-/* MAIN ACTION */
-
-.advance{
-  width:100%;
-  margin-top:10px;
-  min-height:58px;
-  border:0;
-  border-radius:16px;
-  background:linear-gradient(135deg,#1da47f,#1570a0);
-  color:white;
-  font-size:17px;
-  font-weight:bold;
-  box-shadow:0 7px 22px #168a8666;
-}
-
-.advance:active{
-  transform:scale(.98);
-}
-
-/* LOG */
-
-.logBox{
-  margin-top:15px;
-  background:#06121d;
-  border:1px solid #173247;
-  border-radius:15px;
-  overflow:hidden;
-}
-
-.logHeader{
-  padding:10px;
-  font-size:13px;
-  font-weight:bold;
-  background:#0c2030;
-}
-
-.log{
-  height:105px;
-  overflow:auto;
-  padding:10px;
-  font-size:11px;
-  line-height:1.8;
-  color:#abc5d4;
-}
-
-/* FOOTER */
-
-.footer{
-  text-align:center;
-  color:#557285;
-  font-size:10px;
-  padding:15px 0 5px;
-}
-
-@media(max-width:380px){
-  #app{
-    padding:10px;
-  }
-
-  .big{
-    font-size:17px;
-  }
-
-  .buildBtn{
-    font-size:12px;
-  }
-
-  h1{
-    font-size:22px;
-  }
-}
-</style>
+        button {
+            width: 100%;
+            max-width: 350px;
+            padding: 16px;
+            border: 0;
+            border-radius: 14px;
+            background: #1d8f72;
+            color: white;
+            font-size: 18px;
+        }
+    </style>
 </head>
 
 <body>
 
-<div id="app">
+    <h1>🌍 TerraNova</h1>
 
-  <!-- HEADER -->
+    <p>التطبيق يعمل بنجاح ✅</p>
 
-  <div class="header">
+    <button onclick="test()">
+        اختبار اللعبة
+    </button>
 
-    <div class="logo">
+    <script>
+        function test() {
+            document.querySelector("p").textContent =
+                "JavaScript يعمل بنجاح 🎮";
+        }
+    </script>
 
-      <div class="logoIcon">🌍</div>
-
-      <div>
-        <h1>TerraNova</h1>
-        <div class="version">Planet Builder • الإصدار 0.2</div>
-      </div>
-
-    </div>
-
-    <div class="status">
-      ● Online
-    </div>
-
-  </div>
-
-  <!-- RESOURCES -->
-
-  <div class="stats">
-
-    <div class="card">
-      <div id="credits" class="big">1000</div>
-      <div class="label">💰 الرصيد</div>
-    </div>
-
-    <div class="card">
-      <div id="oxy" class="big">5%</div>
-      <div class="label">🫁 الأكسجين</div>
-    </div>
-
-    <div class="card">
-      <div id="pop" class="big">10</div>
-      <div class="label">👨‍🚀 السكان</div>
-    </div>
-
-  </div>
-
-  <!-- PLANET -->
-
-  <div class="planetArea">
-
-    <div class="planet"></div>
-
-    <div class="planetGlow"></div>
-
-  </div>
-
-  <!-- PLANET STATS -->
-
-  <div class="stats">
-
-    <div class="card">
-      <div id="water" class="big">8%</div>
-      <div class="label">💧 المياه</div>
-    </div>
-
-    <div class="card">
-      <div id="temp" class="big">-35°C</div>
-      <div class="label">🌡️ الحرارة</div>
-    </div>
-
-    <div class="card">
-      <div id="power" class="big">50</div>
-      <div class="label">⚡ الطاقة</div>
-    </div>
-
-  </div>
-
-  <!-- MISSION -->
-
-  <div class="mission">
-
-    <div class="missionTitle">
-      🎯 المهمة الحالية
-    </div>
-
-    <div class="progress">
-      <div id="missionProgress" class="progressBar"></div>
-    </div>
-
-    <div id="missionText" class="missionText">
-      ارفع الأكسجين والمياه وابدأ أول مستعمرة.
-    </div>
-
-  </div>
-
-  <!-- BUILDINGS -->
-
-
-  
+</body>
+</html>
