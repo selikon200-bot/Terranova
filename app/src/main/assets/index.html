@@ -200,7 +200,7 @@ body {
     margin-bottom: 12px;
 }
 
-/* المباني */
+/* أزرار البناء */
 
 .buttons {
     display: grid;
@@ -222,32 +222,7 @@ button:active {
     transform: scale(.97);
 }
 
-.advance {
-    width: 100%;
-    margin-top: 10px;
-    background: #176fa0;
-    font-size: 16px;
-}
-
-.logBox {
-    margin-top: 15px;
-    background: #081725;
-    border-radius: 12px;
-    padding: 10px;
-}
-
-.logTitle {
-    font-weight: bold;
-    margin-bottom: 7px;
-}
-
-.log {
-    height: 100px;
-    overflow-y: auto;
-    color: #b9d2e2;
-    font-size: 12px;
-    line-height: 1.8;
-}
+/* قائمة المباني */
 
 .buildingsList {
     margin-top: 12px;
@@ -273,6 +248,94 @@ button:active {
 
 .buildingRow:last-child {
     border-bottom: 0;
+}
+
+/* حالة التشغيل التلقائي */
+
+.autoBox {
+    margin-top: 10px;
+    background: #0c1d2d;
+    border: 1px solid #1e3a52;
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+    color: #91abc0;
+    font-size: 12px;
+}
+
+.autoDot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #39d98a;
+    border-radius: 50%;
+    margin-left: 5px;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%,100% {
+        opacity: .4;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+.logBox {
+    margin-top: 15px;
+    background: #081725;
+    border-radius: 12px;
+    padding: 10px;
+}
+
+.logTitle {
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.log {
+    height: 100px;
+    overflow-y: auto;
+    color: #b9d2e2;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+/* تحسين الهاتف */
+
+@media (max-width: 400px) {
+
+    #app {
+        padding: 9px;
+    }
+
+    .header h1 {
+        font-size: 26px;
+    }
+
+    .planetArea {
+        height: 290px;
+    }
+
+    .planet {
+        width: 220px;
+        height: 220px;
+    }
+
+    .value {
+        font-size: 18px;
+    }
+
+    .label {
+        font-size: 10px;
+    }
+
+    button {
+        padding: 13px 5px;
+        font-size: 12px;
+    }
 }
 </style>
 </head>
@@ -314,8 +377,11 @@ button:active {
         <div class="planet" id="planet">
 
             <div class="building b1" id="building1">💧</div>
+
             <div class="building b2" id="building2">☀️</div>
+
             <div class="building b3" id="building3">🌱</div>
+
             <div class="building b4" id="building4">🏠</div>
 
         </div>
@@ -323,10 +389,112 @@ button:active {
     </div>
 
     <div class="mapControls">
-        <button onclick="zoomPlanet(1)">＋</button>
-        <button onclick="resetPlanet()">🌍</button>
-        <button onclick="zoomPlanet(-1)">−</button>
+
+        <button onclick="zoomPlanet(1)">
+            ＋
+        </button>
+
+        <button onclick="resetPlanet()">
+            🌍
+        </button>
+
+        <button onclick="zoomPlanet(-1)">
+            −
+        </button>
+
     </div>
 
     <div class="mapInfo">
-        اسحب الكوك
+        اسحب الكوكب لتحريك الخريطة • استخدم ＋ و − للتكبير
+    </div>
+
+    <div class="stats">
+
+        <div class="card">
+            <div id="water" class="value">8%</div>
+            <div class="label">💧 المياه</div>
+        </div>
+
+        <div class="card">
+            <div id="temp" class="value">-35°C</div>
+            <div class="label">🌡️ الحرارة</div>
+        </div>
+
+        <div class="card">
+            <div id="power" class="value">50</div>
+            <div class="label">⚡ الطاقة</div>
+        </div>
+
+    </div>
+
+    <div class="buttons">
+
+        <button onclick="build('extractor')">
+            💧 مستخرج مياه
+            <br>
+            <small>300 💰</small>
+        </button>
+
+        <button onclick="build('solar')">
+            ☀️ محطة شمسية
+            <br>
+            <small>250 💰</small>
+        </button>
+
+        <button onclick="build('greenhouse')">
+            🌱 بيت زراعي
+            <br>
+            <small>450 💰</small>
+        </button>
+
+        <button onclick="build('habitat')">
+            🏠 مستعمرة
+            <br>
+            <small>600 💰</small>
+        </button>
+
+    </div>
+
+    <div class="buildingsList">
+
+        <h3>🏗️ مستعمرات TerraNova</h3>
+
+        <div class="buildingRow">
+            <span>💧 مستخرج المياه</span>
+            <span id="extractorCount">0</span>
+        </div>
+
+        <div class="buildingRow">
+            <span>☀️ المحطات الشمسية</span>
+            <span id="solarCount">0</span>
+        </div>
+
+        <div class="buildingRow">
+            <span>🌱 البيوت الزراعية</span>
+            <span id="greenhouseCount">0</span>
+        </div>
+
+        <div class="buildingRow">
+            <span>🏠 المستعمرات</span>
+            <span id="habitatCount">0</span>
+        </div>
+
+    </div>
+
+    <div class="autoBox">
+        <span class="autoDot"></span>
+        🔄 الكوكب يتطور تلقائيًا كل 5 ثوانٍ
+        <br>
+        الدورة الحالية:
+        <strong id="turnText">1</strong>
+    </div>
+
+    <div class="logBox">
+
+        <div class="logTitle">
+            📜 سجل المهمة
+        </div>
+
+        <div id="log" class="log"></div>
+
+    </div>
