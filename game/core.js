@@ -1,31 +1,34 @@
 (function(){'use strict';
-const KEY='terranova-save-v1';
-const defaults={version:1,credits:1000,research:100,bio:50,water:8,energy:50,food:30,minerals:20,oxygen:5,population:10,health:70,temperature:-25,pressure:35,eco:20,climate:25,turn:1,cities:0,hospitals:0,explored:1,tech:{},projects:{},log:[],lastEvent:'',lastSave:0};
-const numbers=['credits','research','bio','water','energy','food','minerals','oxygen','population','health','temperature','pressure','eco','climate','turn','cities','hospitals','explored'];
-function load(){let s=null;try{s=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){};if(!s){try{s=JSON.parse(localStorage.getItem('terranova08')||'null')}catch(e){}};s=Object.assign({},defaults,s||{});for(const k of ['tech','projects'])s[k]=Object.assign({},defaults[k],s[k]||{});numbers.forEach(k=>{if(!Number.isFinite(Number(s[k])))s[k]=defaults[k];else s[k]=Number(s[k])});return s}
+const KEY='terranova-save-v2';
+const defaults={version:2,credits:1000,research:100,bio:50,water:8,energy:50,food:30,minerals:20,oxygen:5,population:10,health:70,disease:8,patients:1,temperature:-25,pressure:35,eco:20,climate:25,turn:1,cities:0,farms:0,hospitals:0,vaccines:0,explored:1,tech:{},projects:{},log:[],lastSave:0};
+const numeric=Object.keys(defaults).filter(k=>typeof defaults[k]==='number');
+function load(){let s=null;try{s=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){};if(!s){try{s=JSON.parse(localStorage.getItem('terranova-save-v1')||'null')}catch(e){};if(!s){try{s=JSON.parse(localStorage.getItem('terranova08')||'null')}catch(e){}}}s=Object.assign({},defaults,s||{});s.version=2;s.tech=Object.assign({},defaults.tech,s.tech||{});s.projects=Object.assign({},defaults.projects,s.projects||{});s.log=Array.isArray(s.log)?s.log:[];numeric.forEach(k=>{if(!Number.isFinite(Number(s[k])))s[k]=defaults[k];else s[k]=Number(s[k])});return s}
 let g=load();
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function save(){g.lastSave=Date.now();localStorage.setItem(KEY,JSON.stringify(g));try{window.dispatchEvent(new CustomEvent('terranova:state'))}catch(e){}}
-function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
-function note(t){g.log.unshift(t);g.log=g.log.slice(0,30);save()}
-function spend(n){if(g.credits<n){note('❌ الرصيد غير كافٍ');return false}g.credits-=n;return true}
+function note(t){g.log.unshift(t);g.log=g.log.slice(0,40);save()}
+function spend(n){if(g.credits<n){note('❌ تحتاج '+n+' 💰');return false}g.credits-=n;return true}
 function act(type){
- if(type==='heat'&&spend(120)){g.temperature=clamp(g.temperature+2,-40,35);g.climate=clamp(g.climate+2,0,100);note('🔥 ارتفعت حرارة الكوكب +2°C')}
- else if(type==='pressure'&&spend(180)){g.pressure=clamp(g.pressure+5,10,120);note('💨 ارتفع الضغط الجوي +5 kPa')}
- else if(type==='water'&&spend(200)){g.water=clamp(g.water+3,0,100);note('💧 تمت إضافة مياه +3')}
- else if(type==='oxygen'&&spend(220)){g.oxygen=clamp(g.oxygen+1,0,30);note('🫁 ارتفع الأكسجين +1%')}
- else if(type==='city'&&spend(700)){g.cities++;g.population+=12;g.food=Math.max(0,g.food-5);g.energy=Math.max(0,g.energy-10);note('🏙️ تم تأسيس مدينة جديدة')}
- else if(type==='hospital'&&spend(500)){g.hospitals++;g.health=clamp(g.health+8,0,100);note('🏥 تم بناء مركز طبي')}
- else if(type==='explore'&&spend(250)){g.explored++;g.minerals+=12;g.research+=20;note('🧭 اكتشفت منطقة وموارد جديدة')}
- else if(type==='research'&&g.research>=150){g.research-=150;g.tech.medical=true;g.health=clamp(g.health+5,0,100);note('🔬 تم تطوير تقنية طبية')}
- else if(type==='life'&&g.research>=300&&g.bio>=100){g.research-=300;g.bio-=100;g.projects.life=true;g.eco=clamp(g.eco+10,0,100);note('🧬 تم اكتشاف شكل حياة جديد')}
- else if(type==='solar'&&spend(250)){g.energy+=20;g.climate=clamp(g.climate+2,0,100);note('☀️ تم بناء محطة شمسية')}
- else if(type==='farm'&&spend(450)){g.food+=15;g.oxygen=clamp(g.oxygen+2,0,30);g.eco=clamp(g.eco+5,0,100);note('🌱 تم بناء مزرعة')}
- else {return render()}
- render()
+ let ok=true;
+ if(type==='heat'){if(spend(120)){g.temperature=clamp(g.temperature+2,-40,35);g.climate=clamp(g.climate+2,0,100);note('🔥 الحرارة +2°C')}else ok=false}
+ else if(type==='pressure'){if(spend(180)){g.pressure=clamp(g.pressure+5,10,120);note('💨 الضغط +5 kPa')}else ok=false}
+ else if(type==='water'){if(spend(200)){g.water=clamp(g.water+3,0,100);note('💧 المياه +3')}else ok=false}
+ else if(type==='oxygen'){if(spend(220)){g.oxygen=clamp(g.oxygen+1,0,30);note('🫁 الأكسجين +1%')}else ok=false}
+ else if(type==='city'){if(spend(700)){g.cities++;g.population+=12;g.food=Math.max(0,g.food-5);g.energy=Math.max(0,g.energy-10);note('🏙️ تأسست مدينة')}else ok=false}
+ else if(type==='farm'){if(spend(450)){g.farms++;g.food+=15;g.oxygen=clamp(g.oxygen+2,0,30);g.eco=clamp(g.eco+5,0,100);note('🌱 بنيت مزرعة')}else ok=false}
+ else if(type==='hospital'){if(spend(500)){g.hospitals++;g.health=clamp(g.health+8,0,100);g.disease=clamp(g.disease-4,0,100);note('🏥 بني مركز طبي')}else ok=false}
+ else if(type==='vaccine'){if(g.research>=200){g.research-=200;g.vaccines++;g.disease=clamp(g.disease-8,0,100);g.health=clamp(g.health+5,0,100);note('💉 طُوّر لقاح')}else{note('❌ تحتاج 200 🔬 للقاح');ok=false}}
+ else if(type==='research'){if(g.research>=150){g.research-=150;g.tech.medical=true;g.health=clamp(g.health+5,0,100);note('🔬 طورت تقنية طبية')}else{note('❌ تحتاج 150 🔬');ok=false}}
+ else if(type==='life'){if(g.research>=300&&g.bio>=100){g.research-=300;g.bio-=100;g.projects.life=true;g.eco=clamp(g.eco+10,0,100);note('🧬 اكتشفت حياة جديدة')}else{note('❌ تحتاج 300 🔬 و100 🧬');ok=false}}
+ else if(type==='solar'){if(spend(250)){g.energy+=20;g.climate=clamp(g.climate+2,0,100);note('☀️ بنيت محطة شمسية')}else ok=false}
+ else if(type==='explore'){if(spend(250)){g.explored++;g.minerals+=12;g.research+=20;note('🧭 اكتشفت منطقة جديدة')}else ok=false}
+ if(ok)render();else render();
 }
-function cycle(){g.turn++;g.water=clamp(g.water+(g.cities?-.2:0),0,100);g.energy=Math.max(0,g.energy-g.population*.03);g.food=Math.max(0,g.food-g.population*.02);g.research+=5+g.explored*.5;g.credits+=25+g.population*.4;g.health=clamp(g.health+(g.water>20&&g.food>20?1:.2)-g.cities*.05+g.hospitals*.35,0,100);g.eco=clamp(g.eco+(g.water>20?0.3:-0.2)+g.cities*.05,0,100);if(g.health<40)note('⚠️ صحة السكان منخفضة');if(Math.random()<.12){g.minerals+=8;note('⛏️ تم اكتشاف عرق معدني جديد')}save();render()}
-function planetClass(){if(g.eco<30)return'planet cold';if(g.eco<60)return'planet';return'planet green'}
-function render(){const q=id=>document.getElementById(id);const values={credits:Math.floor(g.credits),research:Math.floor(g.research),bio:Math.floor(g.bio),water:Math.floor(g.water),energy:Math.floor(g.energy),food:Math.floor(g.food),oxygen:Math.floor(g.oxygen)+'%',population:Math.floor(g.population),health:Math.floor(g.health)+'%',temperature:Math.round(g.temperature)+'°C',pressure:Math.round(g.pressure)+' kPa',climate:Math.floor(g.climate)+'%',cities:g.cities,hospitals:g.hospitals,explored:g.explored,turn:g.turn};for(const [id,val] of Object.entries(values))if(q(id))q(id).textContent=val;if(q('health2'))q('health2').textContent=Math.floor(g.health)+'%';if(q('credits2'))q('credits2').textContent=Math.floor(g.credits);if(q('minerals'))q('minerals').textContent=Math.floor(g.minerals);if(q('planet'))q('planet').className=planetClass();if(q('log'))q('log').innerHTML=g.log.map(x=>'<div>• '+String(x).replace(/</g,'&lt;')+'</div>').join('');save()}
+function cycle(){g.turn++;g.water=clamp(g.water+(g.farms*.4)-(g.cities*.2),0,100);g.energy=Math.max(0,g.energy-g.population*.03);g.food=Math.max(0,g.food+g.farms*1.5-g.population*.02);g.research+=5+g.explored*.5;g.credits+=25+g.population*.4;
+ const environmental=(g.water>20?1.2:-1)+(g.food>20?0.8:-1)+(g.eco>40?1.2:-.8)+(g.hospitals*.5)+(g.vaccines*.4);g.health=clamp(g.health+environmental*.15-g.disease*.015,0,100);
+ const spread=(g.water<15?1.8:0)+(g.food<15?1:0)+(g.eco<25?1:0)-g.hospitals*1.3-g.vaccines*.9;g.disease=clamp(g.disease+spread*.12,0,100);g.patients=Math.max(0,Math.round(g.population*g.disease/100));
+ if(g.health<40)g.log.unshift('⚠️ صحة السكان منخفضة');if(Math.random()<.12){g.minerals+=8;g.log.unshift('⛏️ اكتشاف معادن');}save();render()}
+function render(){const q=id=>document.getElementById(id);const vals={credits:Math.floor(g.credits),research:Math.floor(g.research),bio:Math.floor(g.bio),water:Math.floor(g.water),energy:Math.floor(g.energy),food:Math.floor(g.food),oxygen:Math.floor(g.oxygen)+'%',population:Math.floor(g.population),health:Math.floor(g.health)+'%',temperature:Math.round(g.temperature)+'°C',pressure:Math.round(g.pressure)+' kPa',climate:Math.floor(g.climate)+'%',cities:g.cities,hospitals:g.hospitals,explored:g.explored,turn:g.turn};Object.entries(vals).forEach(([id,v])=>{if(q(id))q(id).textContent=v});['health2','credits2','minerals','turn'].forEach(()=>{});if(q('health2'))q('health2').textContent=Math.floor(g.health)+'%';if(q('disease'))q('disease').textContent=Math.floor(g.disease)+'%';if(q('patients'))q('patients').textContent=Math.floor(g.patients);if(q('farms'))q('farms').textContent=g.farms;if(q('research2'))q('research2').textContent=Math.floor(g.research);if(q('bio2'))q('bio2').textContent=Math.floor(g.bio);if(q('explored2'))q('explored2').textContent=g.explored;if(q('credits2'))q('credits2').textContent=Math.floor(g.credits);if(q('minerals2'))q('minerals2').textContent=Math.floor(g.minerals);if(q('income'))q('income').textContent=Math.floor(25+g.population*.4);if(q('log'))q('log').innerHTML=g.log.map(x=>'<div>• '+String(x).replace(/</g,'&lt;')+'</div>').join('');if(q('planet'))q('planet').style.filter='brightness('+(0.85+g.eco/350)+') saturate('+(0.9+g.eco/180)+')';save()}
 window.TerraNova={get state(){return g},act,save,render,cycle};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',render);else render();setInterval(cycle,10000);
 })();
