@@ -1,4 +1,4 @@
-/* TerraNova Terraforming System — mobile-friendly planet transformation controls */
+/* TerraNova Terraforming System — persistent planet transformation controls */
 (function(){'use strict';
   const KEY='terranova08';
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -28,7 +28,9 @@
     return Math.round((temp+pressure+oxygen+water)/4);
   }
   function render(){
-    const g=state(),t=ensure(g);save(g);
+    const g=state(),t=ensure(g);
+    g.terraforming=t;
+    save(g);
     let box=document.getElementById('terraformingPanel');
     if(!box){
       box=document.createElement('section');box.id='terraformingPanel';box.className='panel terra-panel';
@@ -37,12 +39,8 @@
     }
     const score=climateScore(t);
     box.innerHTML='<h3>🌍 Terraforming — تشكيل الكوكب</h3>'+
-      '<p class="small">حوّل TerraNova تدريجيًا إلى عالم صالح للحياة. كل قرار يغيّر حالة الكوكب.</p>'+
-      '<div class="terra-grid">'+
-      metric('🌡️ الحرارة',t.temperature.toFixed(0)+'°C','الهدف 14°C')+
-      metric('💨 الضغط',t.pressure.toFixed(0)+' kPa','الهدف 70 kPa')+
-      metric('🫁 الأكسجين',t.oxygen.toFixed(0)+'%','الهدف 18%')+
-      metric('💧 المياه',t.water.toFixed(0)+'%','الهدف 55%')+'</div>'+
+      '<p class="small">تعديلات الكوكب محفوظة ولا تعود للقيمة القديمة بعد التحديث.</p>'+
+      '<div class="terra-grid">'+metric('🌡️ الحرارة',t.temperature.toFixed(0)+'°C','الهدف 14°C')+metric('💨 الضغط',t.pressure.toFixed(0)+' kPa','الهدف 70 kPa')+metric('🫁 الأكسجين',t.oxygen.toFixed(0)+'%','الهدف 18%')+metric('💧 المياه',t.water.toFixed(0)+'%','الهدف 55%')+'</div>'+
       '<div class="terra-score"><b>🌱 ملاءمة الكوكب: '+score+'%</b><div class="terra-bar"><i style="width:'+score+'%"></i></div></div>'+
       '<div class="terra-actions">'+Object.keys(actions).map(k=>'<button data-terra="'+k+'">'+actions[k].label+'<small>'+actions[k].cost+' 💰</small></button>').join('')+'</div>'+
       '<button class="terra-stabilize" data-terra-stabilize="1">⚖️ تثبيت المناخ — 350 💰</button>';
@@ -52,18 +50,19 @@
   function metric(title,value,target){return '<div class="terra-metric"><b>'+title+'</b><strong>'+value+'</strong><span>'+target+'</span></div>'}
   function act(kind){
     const g=state(),t=ensure(g),a=actions[kind];if(!a)return;
-    if((g.credits||0)<a.cost){log(g,'❌ تحتاج '+a.cost+' 💰 لتنفيذ العملية');render();return}
-    g.credits-=a.cost;a.apply(t,g);g.terraforming=t;log(g,'🌍 '+a.label+' — تم تطبيق التغيير على الكوكب');save(g);render();
+    if((g.credits||0)<a.cost){log(g,'❌ تحتاج '+a.cost+' 💰 لتنفيذ العملية');return}
+    g.credits-=a.cost;a.apply(t,g);g.terraforming=t;save(g);log(g,'🌍 '+a.label+' — تم حفظ التغيير على الكوكب');render();
     if(typeof window.render==='function')window.render();
   }
   function stabilize(){
     const g=state(),t=ensure(g),score=climateScore(t);
-    if((g.credits||0)<350){log(g,'❌ تحتاج 350 💰 لتثبيت المناخ');render();return}
-    if(score<45){log(g,'🔒 ملاءمة الكوكب تحتاج إلى 45% على الأقل قبل تثبيت المناخ');render();return}
+    if((g.credits||0)<350){log(g,'❌ تحتاج 350 💰 لتثبيت المناخ');return}
+    if(score<45){log(g,'🔒 ملاءمة الكوكب تحتاج إلى 45% على الأقل قبل تثبيت المناخ');return}
     g.credits-=350;g.climate=clamp((g.climate||25)+6,0,100);g.eco=clamp((g.eco||20)+4,0,100);g.terraforming=t;save(g);log(g,'⚖️ استقر المناخ وتحسنت صحة الكوكب');render();if(typeof window.render==='function')window.render();
   }
   function start(){
-    const css=document.createElement('style');css.textContent='.terra-panel{margin-top:10px;text-align:right}.terra-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}.terra-metric{background:#0a1928;border:1px solid #24445a;border-radius:10px;padding:8px;text-align:center}.terra-metric b,.terra-metric strong,.terra-metric span{display:block}.terra-metric strong{font-size:16px;margin:3px 0}.terra-metric span{font-size:9px;color:#91abc0}.terra-score{margin:9px 0}.terra-bar{height:8px;background:#08131f;border-radius:8px;overflow:hidden;margin-top:5px}.terra-bar i{display:block;height:100%;background:#39c98b}.terra-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}.terra-actions button,.terra-stabilize{border:0;border-radius:11px;padding:10px 6px;background:#2879a8;color:#fff;font-weight:bold;cursor:pointer}.terra-actions small{display:block;margin-top:3px;color:#d6e7f0}.terra-stabilize{width:100%;margin-top:7px;background:#1d8f72}@media(max-width:430px){.terra-grid{grid-template-columns:1fr 1fr}.terra-actions{grid-template-columns:1fr 1fr}}';document.head.appendChild(css);render();setInterval(render,3000)
+    if(document.getElementById('terranova-terraforming-style'))return;
+    const css=document.createElement('style');css.id='terranova-terraforming-style';css.textContent='.terra-panel{margin-top:10px;text-align:right}.terra-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}.terra-metric{background:#0a1928;border:1px solid #24445a;border-radius:10px;padding:8px;text-align:center}.terra-metric b,.terra-metric strong,.terra-metric span{display:block}.terra-metric strong{font-size:16px;margin:3px 0}.terra-metric span{font-size:9px;color:#91abc0}.terra-score{margin:9px 0}.terra-bar{height:8px;background:#08131f;border-radius:8px;overflow:hidden;margin-top:5px}.terra-bar i{display:block;height:100%;background:#39c98b}.terra-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}.terra-actions button,.terra-stabilize{border:0;border-radius:11px;padding:10px 6px;background:#2879a8;color:#fff;font-weight:bold;cursor:pointer}.terra-actions small{display:block;margin-top:3px;color:#d6e7f0}.terra-stabilize{width:100%;margin-top:7px;background:#1d8f72}@media(max-width:430px){.terra-grid{grid-template-columns:1fr 1fr}.terra-actions{grid-template-columns:1fr 1fr}}';document.head.appendChild(css);render();setInterval(render,3000)
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
