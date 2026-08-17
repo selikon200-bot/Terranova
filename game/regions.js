@@ -1,6 +1,6 @@
 (function(){'use strict';
 // TerraNova world-map regions: the planet itself is divided into visible territories.
-// Expansion/capacity mechanics remain disabled; regions are geographic zones on the globe.
+// Expansion/capacity mechanics and blocking popups are disabled.
 try{window.alert=function(){};}catch(e){}
 const zones=[
  {id:'food',label:'🌾 الزراعة',x:23,y:30,c:'rgba(73,180,92,.42)'},
@@ -10,31 +10,9 @@ const zones=[
  {id:'research',label:'🔬 الأبحاث',x:53,y:73,c:'rgba(155,85,220,.42)'},
  {id:'explore',label:'🧭 الاستكشاف',x:77,y:67,c:'rgba(40,190,175,.42)'}
 ];
-function install(){
- const planet=document.getElementById('planet');
- if(!planet)return;
- let layer=planet.querySelector('.planet-region-layer');
- if(layer)layer.remove();
- layer=document.createElement('div');
- layer.className='planet-region-layer';
- layer.setAttribute('aria-label','مناطق الكوكب');
- const style=document.createElement('style');
- style.textContent=`
- .planet-region-layer{position:absolute;inset:0;z-index:20;border-radius:50%;overflow:hidden;pointer-events:none;}
- .planet-region-layer:before{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 12deg at 50% 50%,rgba(70,180,90,.13) 0 16.66%,rgba(55,145,225,.13) 16.66% 33.33%,rgba(225,75,95,.13) 33.33% 50%,rgba(235,175,45,.13) 50% 66.66%,rgba(155,85,220,.13) 66.66% 83.33%,rgba(40,190,175,.13) 83.33% 100%);mix-blend-mode:screen;}
- .planet-zone{position:absolute;transform:translate(-50%,-50%);width:29%;height:24%;border:1px solid rgba(255,255,255,.48);border-radius:48% 52% 45% 55%;background:var(--zone);box-shadow:inset 0 0 14px rgba(255,255,255,.08),0 0 8px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;font-size:clamp(9px,2.5vw,14px);font-weight:800;text-shadow:0 2px 4px #000;backdrop-filter:blur(1px);}
- .planet-zone:after{content:"";position:absolute;inset:-5px;border:1px dashed rgba(255,255,255,.22);border-radius:inherit;}
- .planet-zone-name{position:relative;z-index:2;padding:4px 6px;border-radius:7px;background:rgba(0,8,15,.35);}
- `;
- document.head.appendChild(style);
- zones.forEach(z=>{const el=document.createElement('div');el.className='planet-zone';el.style.left=z.x+'%';el.style.top=z.y+'%';el.style.setProperty('--zone',z.c);el.innerHTML='<span class="planet-zone-name">'+z.label+'</span>';layer.appendChild(el);});
- planet.appendChild(layer);
-}
-function removeOldScreenMap(){
- document.querySelectorAll('.regions,.region-map,.zone').forEach(function(el){el.remove();});
-}
-function render(){install();removeOldScreenMap();}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',render,{once:true});else render();
-window.addEventListener('load',render,{once:true});
-window.TerraNovaRegions={zones,zonesOnPlanet:true,canBuild:function(){return true},render:render};
+function install(){const planet=document.getElementById('planet');if(!planet)return;let layer=planet.querySelector('.planet-region-layer');if(layer)layer.remove();layer=document.createElement('div');layer.className='planet-region-layer';layer.setAttribute('aria-label','مناطق الكوكب');const style=document.createElement('style');style.textContent='.planet-region-layer{position:absolute;inset:0;z-index:20;border-radius:50%;overflow:hidden;pointer-events:none}.planet-region-layer:before{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 12deg at 50% 50%,rgba(70,180,90,.13) 0 16.66%,rgba(55,145,225,.13) 16.66% 33.33%,rgba(225,75,95,.13) 33.33% 50%,rgba(235,175,45,.13) 50% 66.66%,rgba(155,85,220,.13) 66.66% 83.33%,rgba(40,190,175,.13) 83.33% 100%);mix-blend-mode:screen}.planet-zone{position:absolute;transform:translate(-50%,-50%);width:29%;height:24%;border:1px solid rgba(255,255,255,.48);border-radius:48% 52% 45% 55%;background:var(--zone);box-shadow:inset 0 0 14px rgba(255,255,255,.08),0 0 8px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;font-size:clamp(9px,2.5vw,14px);font-weight:800;text-shadow:0 2px 4px #000;backdrop-filter:blur(1px)}.planet-zone:after{content:"";position:absolute;inset:-5px;border:1px dashed rgba(255,255,255,.22);border-radius:inherit}.planet-zone-name{position:relative;z-index:2;padding:4px 6px;border-radius:7px;background:rgba(0,8,15,.35)}';document.head.appendChild(style);zones.forEach(z=>{const el=document.createElement('div');el.className='planet-zone';el.style.left=z.x+'%';el.style.top=z.y+'%';el.style.setProperty('--zone',z.c);el.innerHTML='<span class="planet-zone-name">'+z.label+'</span>';layer.appendChild(el)});planet.appendChild(layer)}
+function removeOldScreenMap(){document.querySelectorAll('.regions,.region-map,.zone').forEach(el=>el.remove())}
+function fixNewGameButton(){const b=document.getElementById('tn-new');if(!b)return;b.onclick=function(e){e.preventDefault();e.stopImmediatePropagation();try{['terranova-save-v4','terranova-save-v3','terranova-save-v2','terranova-save-v1','terranova-last-save'].forEach(k=>localStorage.removeItem(k));localStorage.setItem('terranova-new-game','1')}catch(_){ }const u=new URL(location.href);u.searchParams.set('newgame',String(Date.now()));location.replace(u.href)}}
+function boot(){install();removeOldScreenMap();fixNewGameButton()}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();window.addEventListener('load',boot,{once:true});window.TerraNovaRegions={zones,zonesOnPlanet:true,canBuild:function(){return true},render:boot};
 })();
