@@ -9,5 +9,6 @@ const EVENTS=[
 function pick(){const total=EVENTS.reduce((a,e)=>a+e.weight,0);let r=Math.random()*total;for(const e of EVENTS){r-=e.weight;if(r<0)return e}return EVENTS[EVENTS.length-1]}
 function trigger(){if(!window.TerraNova)return;const s=window.TerraNova.state;const e=pick();const detail=e.apply(s);if(Array.isArray(s.log)){s.log.unshift('🎲 حدث عشوائي: '+e.name+' — '+detail);s.log=s.log.slice(0,50)}window.TerraNova.save();window.TerraNova.render()}
 window.TerraNovaEvents={trigger,pick};
+// الأحداث تعمل في الخلفية وتُسجل في السجل فقط، بدون نوافذ أو إشعارات تعطل اللعب.
 setTimeout(()=>setInterval(trigger,15000),7000);
 })();
