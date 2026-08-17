@@ -6,7 +6,8 @@ on:
     branches: [main]
     paths:
       - 'index.html'
-      - 'app/src/main/assets/index.html'
+      - 'game/**'
+      - 'app/src/main/assets/**'
 
 permissions:
   contents: read
@@ -18,18 +19,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Validate files and JavaScript
+      - name: Validate web and Android assets
         run: |
+          set -e
           test -s index.html
+          test -s game/core.js
           test -s app/src/main/assets/index.html
+          test -s app/src/main/assets/game/core.js
           python - <<'PY'
           from pathlib import Path
-          for p in [Path('index.html'), Path('app/src/main/assets/index.html')]:
+          checks = [Path('index.html'), Path('app/src/main/assets/index.html')]
+          for p in checks:
               s=p.read_text(encoding='utf-8')
-              required=['<html','<script>','</script>','</html>','waterBtn','solarBtn','greenBtn','habitatBtn','setInterval(advance,5000)']
+              required=['<html','id="planet"','data-action="heat"','data-action="pressure"','data-action="hospital"','data-action="research"','data-action="explore"','id="economy"','id="swipeArea"','core.js']
               missing=[x for x in required if x not in s]
               if missing: raise SystemExit(f'{p}: missing {missing}')
               if s.count('<script') != s.count('</script>'): raise SystemExit(f'{p}: unbalanced script tags')
-              if 'document.getElementBy' in s and 'document.getElementById' not in s: raise SystemExit(f'{p}: broken DOM selector')
+              if 'living-planet.js' in s or 'living-planet.css' in s: raise SystemExit(f'{p}: legacy living planet renderer still referenced')
               print(f'{p}: OK ({len(s)} chars)')
+          core=Path('game/core.js').read_text(encoding='utf-8')
+          asset_core=Path('app/src/main/assets/game/core.js').read_text(encoding='utf-8')
+          if core != asset_core: raise SystemExit('Web and Android game engines are out of sync')
+          print('Game engines: synchronized')
           PY
